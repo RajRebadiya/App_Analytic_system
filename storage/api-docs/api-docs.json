@@ -1,0 +1,2139 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Multi Android App Management API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/admin/register": {
+            "post": {
+                "tags": [
+                    "Admin Auth"
+                ],
+                "operationId": "240c36449ac8724d731ef50fb82c102f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdminRegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Create admin user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/login": {
+            "post": {
+                "tags": [
+                    "Admin Auth"
+                ],
+                "operationId": "c508bbc111d83d416440bfa1969b6aa8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdminLoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Admin login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/install": {
+            "post": {
+                "tags": [
+                    "App"
+                ],
+                "operationId": "0b3a72e2e8523eb034ee5ff577b6ae32",
+                "parameters": [
+                    {
+                        "name": "X-App-Id",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "jivanand-1cmdewqs"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InstallRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Installation tracked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AppApiKey": []
+                    }
+                ],
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/heartbeat": {
+            "post": {
+                "tags": [
+                    "App"
+                ],
+                "operationId": "0df0c84544245e86bbdbe873ee67adcd",
+                "parameters": [
+                    {
+                        "name": "X-App-Id",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "jivanand-1cmdewqs"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/HeartbeatRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Heartbeat tracked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AppApiKey": []
+                    }
+                ],
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/save-token": {
+            "post": {
+                "tags": [
+                    "App"
+                ],
+                "operationId": "321ede227a6f6a15021c38f8337b19f5",
+                "parameters": [
+                    {
+                        "name": "X-App-Id",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "jivanand-1cmdewqs"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SaveTokenRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Device token saved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AppApiKey": []
+                    }
+                ],
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/ads": {
+            "get": {
+                "tags": [
+                    "App"
+                ],
+                "operationId": "633133bcb634a5f22a1aa7e7a0e7ae88",
+                "parameters": [
+                    {
+                        "name": "X-App-Id",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "jivanand-1cmdewqs"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Active advertisements",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AppApiKey": []
+                    }
+                ],
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/ad-config": {
+            "get": {
+                "tags": [
+                    "App"
+                ],
+                "operationId": "b8732bf5584a8e344130c3d2992ade9b",
+                "parameters": [
+                    {
+                        "name": "X-App-Id",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "jivanand-1cmdewqs"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Runtime ad credentials and rules for Android ad manager",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdConfigApiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AppApiKey": []
+                    }
+                ],
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/ad-settings": {
+            "get": {
+                "tags": [
+                    "Admin Ad Settings"
+                ],
+                "operationId": "fdbe053e605c4f640ab70a34426d995e",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 25
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List ad settings",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin Ad Settings"
+                ],
+                "operationId": "7c03e15ff27fdba417f1bb764772b90d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdNetworkSettingRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Create or update app ad settings",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/ad-settings/{ad_setting}": {
+            "get": {
+                "tags": [
+                    "Admin Ad Settings"
+                ],
+                "operationId": "354a6b4069fa3002d61692a35acd0633",
+                "parameters": [
+                    {
+                        "name": "ad_setting",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show ad settings",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin Ad Settings"
+                ],
+                "operationId": "bece320281586e21e618bde0fe6b91cc",
+                "parameters": [
+                    {
+                        "name": "ad_setting",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdNetworkSettingRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Update ad settings",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin Ad Settings"
+                ],
+                "operationId": "15606d6a8ac5a3c29fa22a191f0a6ef7",
+                "parameters": [
+                    {
+                        "name": "ad_setting",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete ad settings",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/version-check": {
+            "get": {
+                "tags": [
+                    "App"
+                ],
+                "operationId": "169ce40878b90f57300cc510caef8bec",
+                "parameters": [
+                    {
+                        "name": "X-App-Id",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "jivanand-1cmdewqs"
+                    },
+                    {
+                        "name": "current_version",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1.0.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Version status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AppApiKey": []
+                    }
+                ],
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/event": {
+            "post": {
+                "tags": [
+                    "App"
+                ],
+                "operationId": "91d92b5eb4710751a538b2320baf6b80",
+                "parameters": [
+                    {
+                        "name": "X-App-Id",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "jivanand-1cmdewqs"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EventRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Event stored",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AppApiKey": []
+                    }
+                ],
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/notifications": {
+            "get": {
+                "tags": [
+                    "App"
+                ],
+                "operationId": "e9d26f7fd4f9c183885746c629a65e3c",
+                "parameters": [
+                    {
+                        "name": "X-App-Id",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "jivanand-1cmdewqs"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AppApiKey": []
+                    }
+                ],
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/dashboard": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "operationId": "1d684945918dd35e7fad10a11cd4c3e8",
+                "parameters": [
+                    {
+                        "name": "app_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 2
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dashboard analytics",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/apps": {
+            "get": {
+                "tags": [
+                    "Admin Apps"
+                ],
+                "operationId": "1683aa90594944c2e9f75138c5473b48",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 25
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List apps",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin Apps"
+                ],
+                "operationId": "adb532e4f77b605f14d4fcc083e62f74",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdminAppRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Create app",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/apps/{app}": {
+            "get": {
+                "tags": [
+                    "Admin Apps"
+                ],
+                "operationId": "9d1dac339dbe4f9b7c7d39f95f06b485",
+                "parameters": [
+                    {
+                        "name": "app",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 2
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show app",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin Apps"
+                ],
+                "operationId": "e671eb0f61d0074520ab5d4031354e20",
+                "parameters": [
+                    {
+                        "name": "app",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 2
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdminAppRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Update app",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin Apps"
+                ],
+                "operationId": "3fe076ded4775d056503907e54f236f8",
+                "parameters": [
+                    {
+                        "name": "app",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 2
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete app",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/advertisements": {
+            "get": {
+                "tags": [
+                    "Admin Advertisements"
+                ],
+                "operationId": "8202cff2dc1a60ae40414ac4fa1de9e5",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 25
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List advertisements",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin Advertisements"
+                ],
+                "operationId": "9a076c238c1eb2104ac21ddef583ccad",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdvertisementRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Create advertisement",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/advertisements/{advertisement}": {
+            "get": {
+                "tags": [
+                    "Admin Advertisements"
+                ],
+                "operationId": "cf297254973c8bb375f668b03e57860f",
+                "parameters": [
+                    {
+                        "name": "advertisement",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 10
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show advertisement",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin Advertisements"
+                ],
+                "operationId": "a8e10bc5b59ebbfc5669f9e080e31f81",
+                "parameters": [
+                    {
+                        "name": "advertisement",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 10
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdvertisementRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Update advertisement",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin Advertisements"
+                ],
+                "operationId": "d8a07a925c25bb522734b5f9767a99f4",
+                "parameters": [
+                    {
+                        "name": "advertisement",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 10
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete advertisement",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/notifications": {
+            "get": {
+                "tags": [
+                    "Admin Notifications"
+                ],
+                "operationId": "ebfa896f2fe232e844b82737644b0fe7",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 25
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List notifications",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin Notifications"
+                ],
+                "operationId": "19133704e259ffd448a410ce77d7fcfe",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NotificationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Create notification",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/notifications/{notification}": {
+            "get": {
+                "tags": [
+                    "Admin Notifications"
+                ],
+                "operationId": "565a66715893b72918349878de921869",
+                "parameters": [
+                    {
+                        "name": "notification",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 25
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show notification",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin Notifications"
+                ],
+                "operationId": "43ab15d6378d03857a914482460408ab",
+                "parameters": [
+                    {
+                        "name": "notification",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 25
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NotificationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Update notification",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin Notifications"
+                ],
+                "operationId": "b9d99ff0935bf330d8d5e4f450b8cf1d",
+                "parameters": [
+                    {
+                        "name": "notification",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 25
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete notification",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/notifications/{notification}/send": {
+            "post": {
+                "tags": [
+                    "Admin Notifications"
+                ],
+                "operationId": "1fd2ee47ea1c5183ed8e6cf14e63a53d",
+                "parameters": [
+                    {
+                        "name": "notification",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 25
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification queued",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/app-versions": {
+            "get": {
+                "tags": [
+                    "Admin Versions"
+                ],
+                "operationId": "42d0e6223f79bd3ba492af61121159bb",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 25
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List app versions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin Versions"
+                ],
+                "operationId": "8091867e0e1c07c39211316bdafb70f3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AppVersionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Create app version",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/app-versions/{app_version}": {
+            "get": {
+                "tags": [
+                    "Admin Versions"
+                ],
+                "operationId": "645bf72c5e85c6f996673a6809af27dd",
+                "parameters": [
+                    {
+                        "name": "app_version",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show app version",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin Versions"
+                ],
+                "operationId": "e13d414fb71b40e216db8a9e950a308d",
+                "parameters": [
+                    {
+                        "name": "app_version",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AppVersionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Update app version",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin Versions"
+                ],
+                "operationId": "8f85e39d2ffe724ae37464dc5457e2ed",
+                "parameters": [
+                    {
+                        "name": "app_version",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete app version",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApiSuccess": {
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Success message"
+                    },
+                    "data": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationError": {
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 422
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Validation failed"
+                    },
+                    "errors": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "AdminRegisterRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Admin User"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "admin@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "password123"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "AdminLoginRequest": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "admin@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "AdminAppRequest": {
+                "required": [
+                    "name",
+                    "version"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Jivanand"
+                    },
+                    "version": {
+                        "type": "string",
+                        "example": "1.0.0"
+                    }
+                },
+                "type": "object"
+            },
+            "InstallRequest": {
+                "required": [
+                    "device_id",
+                    "app_version"
+                ],
+                "properties": {
+                    "device_id": {
+                        "type": "string",
+                        "example": "device-12345"
+                    },
+                    "device_name": {
+                        "type": "string",
+                        "example": "Pixel 8",
+                        "nullable": true
+                    },
+                    "device_brand": {
+                        "type": "string",
+                        "example": "Google",
+                        "nullable": true
+                    },
+                    "android_version": {
+                        "type": "string",
+                        "example": "15",
+                        "nullable": true
+                    },
+                    "app_version": {
+                        "type": "string",
+                        "example": "1.0.0"
+                    }
+                },
+                "type": "object"
+            },
+            "HeartbeatRequest": {
+                "required": [
+                    "device_id"
+                ],
+                "properties": {
+                    "device_id": {
+                        "type": "string",
+                        "example": "device-12345"
+                    },
+                    "app_version": {
+                        "type": "string",
+                        "example": "1.0.0",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "SaveTokenRequest": {
+                "required": [
+                    "device_id",
+                    "fcm_token"
+                ],
+                "properties": {
+                    "device_id": {
+                        "type": "string",
+                        "example": "device-12345"
+                    },
+                    "fcm_token": {
+                        "type": "string",
+                        "example": "firebase-fcm-token"
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "EventRequest": {
+                "required": [
+                    "device_id",
+                    "event_name"
+                ],
+                "properties": {
+                    "device_id": {
+                        "type": "string",
+                        "example": "device-12345"
+                    },
+                    "event_name": {
+                        "type": "string",
+                        "example": "screen_view",
+                        "enum": [
+                            "app_open",
+                            "screen_view",
+                            "ad_click",
+                            "notification_open",
+                            "button_click"
+                        ]
+                    },
+                    "event_data": {
+                        "type": "object",
+                        "example": {
+                            "screen": "home"
+                        },
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AdvertisementRequest": {
+                "required": [
+                    "app_id",
+                    "title",
+                    "redirect_type",
+                    "status"
+                ],
+                "properties": {
+                    "app_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Summer Offer"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Limited time promotion",
+                        "nullable": true
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "https://example.com/ad.jpg",
+                        "nullable": true
+                    },
+                    "image_file": {
+                        "description": "Optional multipart image upload",
+                        "type": "string",
+                        "format": "binary",
+                        "nullable": true
+                    },
+                    "redirect_type": {
+                        "type": "string",
+                        "example": "url",
+                        "enum": [
+                            "url",
+                            "screen",
+                            "category",
+                            "product"
+                        ]
+                    },
+                    "redirect_value": {
+                        "type": "string",
+                        "example": "https://example.com",
+                        "nullable": true
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-06-01 00:00:00",
+                        "nullable": true
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-06-30 23:59:59",
+                        "nullable": true
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "example": 10,
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "active",
+                        "enum": [
+                            "active",
+                            "inactive"
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "NotificationRequest": {
+                "required": [
+                    "app_id",
+                    "title",
+                    "notification_type",
+                    "send_to"
+                ],
+                "properties": {
+                    "app_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "New Update"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Open the app to see new content",
+                        "nullable": true
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "https://example.com/notification.jpg",
+                        "nullable": true
+                    },
+                    "image_file": {
+                        "description": "Optional multipart image upload",
+                        "type": "string",
+                        "format": "binary",
+                        "nullable": true
+                    },
+                    "notification_type": {
+                        "type": "string",
+                        "example": "general"
+                    },
+                    "send_to": {
+                        "type": "string",
+                        "example": "all",
+                        "enum": [
+                            "all",
+                            "active"
+                        ]
+                    },
+                    "redirect_screen": {
+                        "type": "string",
+                        "example": "product_detail",
+                        "nullable": true
+                    },
+                    "redirect_data": {
+                        "type": "object",
+                        "example": {
+                            "product_id": 1001
+                        },
+                        "nullable": true
+                    },
+                    "send_now": {
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AppVersionRequest": {
+                "required": [
+                    "app_id",
+                    "latest_version",
+                    "min_supported_version"
+                ],
+                "properties": {
+                    "app_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "latest_version": {
+                        "type": "string",
+                        "example": "1.1.0"
+                    },
+                    "min_supported_version": {
+                        "type": "string",
+                        "example": "1.0.0"
+                    },
+                    "force_update": {
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    },
+                    "maintenance_mode": {
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    },
+                    "apk_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://example.com/app.apk",
+                        "nullable": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "New version available",
+                        "nullable": true
+                    },
+                    "change_log": {
+                        "type": "string",
+                        "example": "Bug fixes and performance improvements",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AdConfigResponse": {
+                "properties": {
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "app_adShowStatus": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "app_howShowAd": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "app_adPlatformSequence": {
+                        "type": "string",
+                        "example": "Admob"
+                    },
+                    "app_alernateAdShow": {
+                        "type": "string",
+                        "example": "Admob"
+                    },
+                    "app_mainClickCntSwAd": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "app_innerClickCntSwAd": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "app_dialogBeforeAdShow": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "ad_dialog_time_in_second": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "am_ad_showAdStatus": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "am_AppID": {
+                        "type": "string",
+                        "example": "ca-app-pub-xxxxxxxx~yyyyyyyy"
+                    },
+                    "am_Banner1": {
+                        "type": "string",
+                        "example": "ca-app-pub-xxxxxxxx/yyyyyyyy"
+                    },
+                    "am_Interstitial1": {
+                        "type": "string",
+                        "example": "ca-app-pub-xxxxxxxx/yyyyyyyy"
+                    },
+                    "am_Native1": {
+                        "type": "string",
+                        "example": "ca-app-pub-xxxxxxxx/yyyyyyyy"
+                    },
+                    "am_RewardedVideo1": {
+                        "type": "string",
+                        "example": "ca-app-pub-xxxxxxxx/yyyyyyyy"
+                    },
+                    "MORE_APP": {
+                        "type": "string",
+                        "example": "https://example.com/more-apps.json"
+                    }
+                },
+                "type": "object"
+            },
+            "AdConfigApiResponse": {
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Ad config fetched"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/AdConfigResponse"
+                    }
+                },
+                "type": "object"
+            },
+            "AdNetworkSettingRequest": {
+                "required": [
+                    "app_id",
+                    "how_show_ad",
+                    "main_click_count",
+                    "inner_click_count",
+                    "dialog_time_seconds"
+                ],
+                "properties": {
+                    "app_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    },
+                    "ad_show_status": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    },
+                    "admob_status": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    },
+                    "admob_app_id": {
+                        "type": "string",
+                        "example": "ca-app-pub-xxxxxxxx~yyyyyyyy",
+                        "nullable": true
+                    },
+                    "admob_banner_id": {
+                        "type": "string",
+                        "example": "ca-app-pub-xxxxxxxx/banner",
+                        "nullable": true
+                    },
+                    "admob_interstitial_id": {
+                        "type": "string",
+                        "example": "ca-app-pub-xxxxxxxx/interstitial",
+                        "nullable": true
+                    },
+                    "admob_native_id": {
+                        "type": "string",
+                        "example": "ca-app-pub-xxxxxxxx/native",
+                        "nullable": true
+                    },
+                    "admob_rewarded_id": {
+                        "type": "string",
+                        "example": "ca-app-pub-xxxxxxxx/rewarded",
+                        "nullable": true
+                    },
+                    "how_show_ad": {
+                        "description": "0=sequence, 1=alternate",
+                        "type": "integer",
+                        "example": 0,
+                        "enum": [
+                            0,
+                            1
+                        ]
+                    },
+                    "ad_platform_sequence": {
+                        "type": "string",
+                        "example": "Admob",
+                        "nullable": true
+                    },
+                    "alternate_ad_show": {
+                        "type": "string",
+                        "example": "Admob",
+                        "nullable": true
+                    },
+                    "main_click_count": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "inner_click_count": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "dialog_before_ad_show": {
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    },
+                    "dialog_time_seconds": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "need_internet": {
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    },
+                    "redirect_other_app_status": {
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    },
+                    "new_package_name": {
+                        "type": "string",
+                        "example": "com.example.newapp",
+                        "nullable": true
+                    },
+                    "update_dialog_status": {
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    },
+                    "version_codes": {
+                        "type": "string",
+                        "example": "1,2,3",
+                        "nullable": true
+                    },
+                    "privacy_policy_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://example.com/privacy",
+                        "nullable": true
+                    },
+                    "more_app_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://example.com/more-apps.json",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "AppApiKey": {
+                "type": "apiKey",
+                "name": "X-App-Key",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Admin Auth",
+            "description": "Admin Auth"
+        },
+        {
+            "name": "App",
+            "description": "App"
+        },
+        {
+            "name": "Admin Ad Settings",
+            "description": "Admin Ad Settings"
+        },
+        {
+            "name": "Admin",
+            "description": "Admin"
+        },
+        {
+            "name": "Admin Apps",
+            "description": "Admin Apps"
+        },
+        {
+            "name": "Admin Advertisements",
+            "description": "Admin Advertisements"
+        },
+        {
+            "name": "Admin Notifications",
+            "description": "Admin Notifications"
+        },
+        {
+            "name": "Admin Versions",
+            "description": "Admin Versions"
+        }
+    ]
+}

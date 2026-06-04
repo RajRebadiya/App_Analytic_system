@@ -9,9 +9,12 @@ use App\Http\Controllers\Api\V1\Admin\DashboardController;
 use App\Http\Controllers\Api\V1\Admin\NotificationController;
 use App\Http\Controllers\Api\V1\App\AdConfigController;
 use App\Http\Controllers\Api\V1\App\AppController;
+use App\Http\Controllers\Api\V1\UniversalController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function (): void {
+    Route::post('universal', UniversalController::class)->middleware(['api.log', 'throttle:admin-api']);
+
     Route::middleware(['api.log', 'app.auth', 'throttle:app-api'])->group(function (): void {
         Route::post('install', [AppController::class, 'install']);
         Route::post('heartbeat', [AppController::class, 'heartbeat']);

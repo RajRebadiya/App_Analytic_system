@@ -11,16 +11,17 @@ class AuthenticateApp
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $appId = $request->header('X-App-Id', $request->input('app_id'));
-        $apiKey = $request->header('X-App-Key', $request->header('X-Api-Key', $request->input('api_key')));
+        $packageName = $request->header(
+            'app_package_name',
+            $request->header('X-App-Package-Name', $request->input('app_package_name', $request->input('package_name')))
+        );
 
         $app = AndroidApp::query()
-            ->where('app_id', $appId)
-            ->where('api_key', $apiKey)
+            ->where('package_name', $packageName)
             ->first();
 
         if (! $app || $app->status !== 'active') {
-            return response()->json(['status_code' => 401, 'message' => 'Invalid app credentials'], 401);
+            return response()->json(['status_code' => 401, 'message' => 'Invalid app package name'], 401);
         }
 
         $request->attributes->set('android_app', $app);

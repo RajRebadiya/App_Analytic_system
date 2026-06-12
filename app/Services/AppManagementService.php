@@ -45,10 +45,10 @@ class AppManagementService
     public function versionCheck(AndroidApp $app, string $currentVersion): array
     {
         $version = $app->versions()->latest()->first();
-        $latest = $version?->latest_version ?? $app->latest_version;
-        $minimum = $version?->min_supported_version ?? $app->min_supported_version;
-        $maintenance = $version?->maintenance_mode ?? $app->maintenance_mode;
-        $force = $maintenance || version_compare($currentVersion, $minimum, '<') || (bool) ($version?->force_update ?? $app->force_update);
+        $latest = $version?->latest_version ?? $app->current_version ?? '1.0.0';
+        $minimum = $version?->min_supported_version ?? $app->current_version ?? '1.0.0';
+        $maintenance = (bool) ($version?->maintenance_mode ?? false);
+        $force = $maintenance || version_compare($currentVersion, $minimum, '<') || (bool) ($version?->force_update ?? false);
 
         return [
             'maintenance_mode' => $maintenance,

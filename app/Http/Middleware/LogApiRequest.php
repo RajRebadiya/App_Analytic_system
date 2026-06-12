@@ -20,7 +20,7 @@ class LogApiRequest
             'status_code' => $response->getStatusCode(),
             'response_time_ms' => (int) ((microtime(true) - $startedAt) * 1000),
             'ip_address' => $request->ip(),
-            'app_id' => $request->header('X-App-Id', $request->input('app_id')),
+            'app_id' => $request->header('app_package_name', $request->header('X-App-Package-Name', $request->input('app_package_name', $request->input('package_name')))),
             'user_id' => $request->user()?->id,
             'request_payload' => $this->safePayload($request->except(['password', 'password_confirmation', 'api_key'])),
             'response_payload' => $this->jsonResponse($response),

@@ -11,14 +11,8 @@ return new class extends Migration
         Schema::create('apps', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
-            $table->string('app_id')->unique();
             $table->string('package_name')->unique();
-            $table->string('api_key', 96)->unique();
-            $table->string('current_version')->nullable();
-            $table->string('min_supported_version')->default('1.0.0');
-            $table->string('latest_version')->default('1.0.0');
-            $table->boolean('force_update')->default(false);
-            $table->boolean('maintenance_mode')->default(false);
+            $table->string('current_version')->default('1.0.0');
             $table->string('status', 24)->default('active')->index();
             $table->timestamps();
         });

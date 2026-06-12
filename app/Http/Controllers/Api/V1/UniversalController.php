@@ -12,6 +12,7 @@ use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class UniversalController extends Controller
@@ -33,7 +34,7 @@ class UniversalController extends Controller
             'payload' => ['nullable', 'array'],
         ], [
             'module.required' => 'Module is required. Example: apps.',
-            'action.required' => 'Action is required. Available actions: list, create, show, update, delete, install, heartbeat.',
+            'action.required' => 'Action is required. Available actions: list, create, show, update, delete, install, heartbeat, save-token.',
             'id.integer' => 'Id must be a valid number.',
             'payload.array' => 'Payload must be a valid JSON object.',
         ])->validate();
@@ -60,8 +61,9 @@ class UniversalController extends Controller
             'delete', 'destroy' => $this->deleteApp($payload, $id),
             'install' => $this->install($request, $payload),
             'heartbeat' => $this->heartbeat($request, $payload),
+            'save-token', 'save_fcm', 'save-fcm', 'save_fcm_token', 'save-fcm-token' => $this->saveToken($request, $payload),
             default => $this->error('Unsupported universal action', 422, [
-                'action' => ['Supported actions: list, create, show, update, delete, install, heartbeat'],
+                'action' => ['Supported actions: list, create, show, update, delete, install, heartbeat, save-token'],
             ]),
         };
     }
@@ -93,7 +95,7 @@ class UniversalController extends Controller
     private function updateApp(array $payload, ?int $id): JsonResponse
     {
         $app = $this->findApp($payload, $id);
-        $data = Validator::make($payload, $this->appRules(), $this->validationMessages())->validate();
+        $data = Validator::make($payload, $this->appRules($app->id), $this->validationMessages())->validate();
 
         return $this->success(
             'App updated',
@@ -133,11 +135,23 @@ class UniversalController extends Controller
         return $this->success('Heartbeat tracked', $this->appManagement->heartbeat($app, $data));
     }
 
-    private function appRules(): array
+    private function saveToken(Request $request, array $payload): JsonResponse
+    {
+        $data = Validator::make($payload, [
+            'device_id' => ['required', 'string', 'max:128'],
+            'fcm_token' => ['required', 'string', 'max:4096'],
+            'is_active' => ['sometimes', 'boolean'],
+        ], $this->validationMessages())->validate();
+        $app = $this->authenticatedApp($request, $payload);
+
+        return $this->success('Device token saved', $this->appManagement->saveToken($app, $data));
+    }
+
+    private function appRules(?int $ignoreAppId = null): array
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'version' => ['required', 'string', 'max:32'],
+            'package_name' => ['required', 'string', 'max:255', Rule::unique('apps', 'package_name')->ignore($ignoreAppId)],
         ];
     }
 
@@ -163,27 +177,25 @@ class UniversalController extends Controller
 
     private function authenticatedApp(Request $request, array $payload): AndroidApp
     {
-        $appId = $request->header('X-App-Id', $payload['app_id'] ?? $request->input('app_id'));
-        $apiKey = $request->header('X-App-Key', $request->header('X-Api-Key', $payload['api_key'] ?? $request->input('api_key')));
+        $packageName = $request->header(
+            'app_package_name',
+            $request->header('X-App-Package-Name', $payload['app_package_name'] ?? $payload['package_name'] ?? $request->input('app_package_name', $request->input('package_name')))
+        );
 
         Validator::make([
-            'app_id' => $appId,
-            'api_key' => $apiKey,
+            'app_package_name' => $packageName,
         ], [
-            'app_id' => ['required', 'string'],
-            'api_key' => ['required', 'string'],
+            'app_package_name' => ['required', 'string'],
         ], [
-            'app_id.required' => 'App id is required. Send X-App-Id header or payload.app_id.',
-            'api_key.required' => 'Api key is required. Send X-App-Key header or payload.api_key.',
+            'app_package_name.required' => 'App package name is required. Send app_package_name header or payload.app_package_name.',
         ])->validate();
 
         $app = AndroidApp::query()
-            ->where('app_id', $appId)
-            ->where('api_key', $apiKey)
+            ->where('package_name', $packageName)
             ->first();
 
         if (! $app || $app->status !== 'active') {
-            abort(response()->json(['status_code' => 401, 'message' => 'Invalid app credentials'], 401));
+            abort(response()->json(['status_code' => 401, 'message' => 'Invalid app package name'], 401));
         }
 
         return $app;
@@ -196,8 +208,10 @@ class UniversalController extends Controller
             'device_id.max' => 'Device id may not be greater than 128 characters.',
             'app_version.required' => 'App version is required.',
             'app_version.max' => 'App version may not be greater than 32 characters.',
+            'fcm_token.required' => 'FCM token is required.',
+            'fcm_token.max' => 'FCM token may not be greater than 4096 characters.',
             'name.required' => 'App name is required.',
-            'version.required' => 'Version is required.',
+            'package_name.required' => 'Package name is required.',
         ];
     }
 }

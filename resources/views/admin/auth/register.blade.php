@@ -1,39 +1,113 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Register</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>body{min-height:100vh;background:#f6f8fb;display:grid;place-items:center}.auth-card{width:min(460px,92vw);background:white;border:1px solid #e5e7eb;border-radius:8px;padding:28px;box-shadow:0 10px 30px rgba(15,23,42,.08)}</style>
+    <title>Create Admin Account | {{ config('app.name') }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
 </head>
-<body>
-<form class="auth-card" method="POST" action="{{ route('admin.register.store') }}">
-    @csrf
-    <h1 class="h4 mb-1">Create Admin Account</h1>
-    <p class="text-muted mb-4">Register once, then use the dashboard normally.</p>
-    @include('admin.components.alerts')
-    <div class="mb-3">
-        <label class="form-label">Name</label>
-        <input class="form-control" name="name" value="{{ old('name') }}" required autofocus>
+<body class="h-full">
+    <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div class="sm:mx-auto sm:w-full sm:max-w-md">
+            <div class="flex justify-center">
+                <div class="bg-indigo-600 p-3 rounded-2xl shadow-xl shadow-indigo-200">
+                    <i data-lucide="user-plus" class="w-10 h-10 text-white"></i>
+                </div>
+            </div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-slate-900 tracking-tight">
+                Create Admin Account
+            </h2>
+            <p class="mt-2 text-center text-sm text-slate-500 font-medium">
+                Register once to access the management tools
+            </p>
+        </div>
+
+        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
+            <div class="bg-white py-8 px-6 shadow-2xl shadow-slate-200/50 rounded-3xl border border-slate-100">
+                @include('admin.components.alerts')
+
+                <form class="space-y-6" method="POST" action="{{ route('admin.register.store') }}">
+                    @csrf
+                    <div>
+                        <label for="name" class="block text-sm font-bold text-slate-700">Full Name</label>
+                        <div class="mt-1 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                <i data-lucide="user" class="h-5 w-5"></i>
+                            </div>
+                            <input id="name" name="name" type="text" value="{{ old('name') }}" required autofocus
+                                   class="appearance-none block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm shadow-sm"
+                                   placeholder="John Doe">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-bold text-slate-700">Email Address</label>
+                        <div class="mt-1 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                <i data-lucide="mail" class="h-5 w-5"></i>
+                            </div>
+                            <input id="email" name="email" type="email" value="{{ old('email') }}" required
+                                   class="appearance-none block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm shadow-sm"
+                                   placeholder="admin@example.com">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="password" class="block text-sm font-bold text-slate-700">Password</label>
+                            <div class="mt-1 relative">
+                                <input id="password" name="password" type="password" required
+                                       class="appearance-none block w-full px-3 py-3 border border-slate-200 rounded-xl placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm shadow-sm"
+                                       placeholder="••••••••">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="password_confirmation" class="block text-sm font-bold text-slate-700">Confirm</label>
+                            <div class="mt-1 relative">
+                                <input id="password_confirmation" name="password_confirmation" type="password" required
+                                       class="appearance-none block w-full px-3 py-3 border border-slate-200 rounded-xl placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm shadow-sm"
+                                       placeholder="••••••••">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg shadow-indigo-200 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
+                            Create Admin Account
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-8 pt-8 border-t border-slate-100 text-center">
+                    <p class="text-sm text-slate-500 font-medium">
+                        Already have an account?
+                        <a href="{{ route('admin.login') }}" class="font-bold text-indigo-600 hover:text-indigo-500 ml-1 transition-colors">
+                            Sign in instead
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input class="form-control" name="email" type="email" value="{{ old('email') }}" required>
-    </div>
-    <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input class="form-control" name="password" type="password" required>
-    </div>
-    <div class="mb-4">
-        <label class="form-label">Confirm Password</label>
-        <input class="form-control" name="password_confirmation" type="password" required>
-    </div>
-    <button class="btn btn-primary w-100">Register</button>
-    <div class="text-center mt-3">
-        <span class="text-muted">Already registered?</span>
-        <a href="{{ route('admin.login') }}">Login</a>
-    </div>
-</form>
+    <script>lucide.createIcons();</script>
 </body>
 </html>
+

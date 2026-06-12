@@ -325,6 +325,34 @@ Response `data` contains keys compatible with the old `CoolBostManage` shared pr
 
 Android should save these values in local preferences and then use them to load/show ads.
 
+### Admin Ad Settings
+
+Admin can add or update app ad configuration from:
+
+```text
+Admin Panel -> Ad Settings -> Add Ad Settings
+```
+
+The form maps to the same payload used by:
+
+```http
+POST /api/v1/admin/ad-settings
+```
+
+Identify the app with the selected app in the admin panel, or with `app_package_name`, `package_name`, `app_db_id`, or numeric `app_id` when calling the API directly.
+
+Important fields:
+
+- AdMob IDs: `admob_interid`, `admob_bannerid`, `admob_medium_rectangleid`, `admob_nativeid`, `admob_appopenid`
+- AdX IDs: `adx_inter_id`, `adx_banner_id`, `adx_medium_rectangleid`, `adx_native_id`, `adx_appopen_id`
+- Facebook IDs: `fb_inter_id`, `fb_banner_id`, `fb_medium_rectangle_id`, `fb_native_id`, `fb_native_banner_id`
+- Wortise IDs: `wortise_app_id`, `wortise_appopen_id`, `wortise_inter_id`, `wortise_banner_id`, `wortise_medium_rectangle_id`, `wortise_native_id`
+- Placement rules: `ad_splash`, `ad_inter`, `ad_appopen`, `ad_native`, `ad_small_native`, `ad_banner`, `ad_qureka`
+- Redirect app settings: `redirect_app`, `new_app_name`, `new_app_icon`, `new_app_banner`, `new_app_body`, `new_app_link`
+- Redirect display toggles: `Download`, `Backgraound`, `Popup`, `Main_click`
+
+After saving, Android receives these values from `GET /api/v1/ad-config`.
+
 ### Promotional Advertisements
 
 Admin creates ads from:
@@ -447,62 +475,51 @@ Admin Panel -> Events
 Admin creates notification from:
 
 ```text
-Admin Panel -> Notifications -> Create Notification
+Admin Panel -> Push Notifications -> Create Notification
+```
+
+The admin form sends through OneSignal to all subscribed users.
+
+Required environment variables:
+
+```env
+ONESIGNAL_APP_ID=your-onesignal-app-id
+ONESIGNAL_REST_API_KEY=your-onesignal-rest-api-key
+```
+
+Setup commands:
+
+```bash
+php artisan migrate
+php artisan storage:link
+php artisan config:clear
 ```
 
 Admin selects:
 
-- App
 - Title
 - Description
-- Image
-- Notification type
-- Send to
-- Redirect screen
-- Redirect data
-
-Admin can either:
-
-- Save notification only
-- Save and send instantly
-- Send later from notification list
+- Image upload
 
 Internal flow:
 
 ```text
 Admin Creates Notification
 -> Notification Saved
--> Admin Clicks Send / Send Now
--> Queue Job Created
--> FCM Sending Starts
--> Notification Logs Stored
--> Dashboard Analytics Updated
+-> Image Stored In storage/app/public/notifications
+-> Public Image URL Sent As big_picture and chrome_web_image
+-> OneSignal Sends Notification To included_segments ["All"]
+-> OneSignal Response Stored In notifications.onesignal_response
+-> Status Stored In notifications.status
 ```
 
 Important:
 
-Queue worker must be running:
-
-```bash
-php artisan queue:work redis --queue=notifications,default --tries=3 --timeout=120
-```
-
-For local testing without Redis, set:
-
-```env
-QUEUE_CONNECTION=database
-```
-
-Then run:
-
-```bash
-php artisan queue:work --queue=notifications,default
-```
+If OneSignal returns an error, the admin sees the API error and the exception is logged in Laravel logs.
 
 Android handling:
 
-- Receive FCM notification.
-- Read `redirect_screen` and `redirect_data`.
+- Receive OneSignal notification.
 - Open target screen.
 - Send `notification_open` event.
 

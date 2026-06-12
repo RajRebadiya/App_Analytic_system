@@ -1,25 +1,129 @@
-@extends('admin.layouts.app', ['title' => 'Installation Analytics', 'heading' => 'Installation Analytics'])
+@extends('admin.layouts.app', ['title' => 'Installation Analytics', 'heading' => 'Installation Analytics', 'subtitle' => 'Track and analyze application installs, device distribution, and version adoption.'])
 
-@section('actions')<a class="btn btn-outline-secondary" href="{{ route('admin.analytics.installations.export', request()->query()) }}">Export CSV</a>@endsection
+@section('actions')
+<a href="{{ route('admin.analytics.installations.export', request()->query()) }}" class="inline-flex items-center px-4 py-2.5 border border-slate-200 shadow-sm text-sm font-bold rounded-xl text-slate-700 bg-white hover:bg-slate-50 transition-all duration-200">
+    <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+    Export Dataset
+</a>
+@endsection
 
 @section('content')
 @include('admin.analytics.partials.filters')
-<div class="row g-3 mb-3">
-    <div class="col-lg-8"><div class="cardx p-3"><h2 class="h6">Daily Installs</h2><canvas id="dailyInstalls" height="120"></canvas></div></div>
-    <div class="col-lg-4"><div class="cardx p-3"><h2 class="h6">Device Brands</h2><canvas id="deviceChart" height="230"></canvas></div></div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-bold text-slate-900">Daily Installs</h3>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-indigo-100 text-indigo-700 rounded-full">New Installs</span>
+        </div>
+        <div class="relative h-[300px]">
+            <canvas id="dailyInstalls"></canvas>
+        </div>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <h3 class="text-lg font-bold text-slate-900 mb-6">Device Brand Distribution</h3>
+        <div class="relative h-[300px] flex items-center justify-center">
+            <canvas id="deviceChart"></canvas>
+        </div>
+    </div>
 </div>
-<div class="cardx p-3">
-    <table class="table js-data-table">
-        <thead><tr><th>App</th><th>Device</th><th>Brand</th><th>Android</th><th>Version</th><th>Installed</th><th>Last Active</th></tr></thead>
-        <tbody>@foreach($installations as $row)<tr><td>{{ $row->app?->name }}</td><td>{{ $row->device_id }}</td><td>{{ $row->device_brand }}</td><td>{{ $row->android_version }}</td><td>{{ $row->app_version }}</td><td>{{ $row->installed_at }}</td><td>{{ $row->last_active_at }}</td></tr>@endforeach</tbody>
-    </table>
+
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200">
+            <thead class="bg-slate-50">
+                <tr>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Application</th>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Device Identifier</th>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Hardware / OS</th>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">App Version</th>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Timestamp</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-slate-200">
+                @foreach($installations as $row)
+                    <tr class="hover:bg-slate-50/50 transition-colors duration-200">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-bold text-slate-900">{{ $row->app?->name }}</div>
+                            <div class="text-[10px] text-slate-400 font-mono">{{ $row->app?->package_name }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-xs font-medium text-slate-600 truncate max-w-[120px]" title="{{ $row->device_id }}">
+                                {{ $row->device_id }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 bg-slate-100 rounded text-[10px] font-bold text-slate-600 uppercase">{{ $row->device_brand }}</span>
+                                <span class="text-xs font-medium text-slate-500">Android {{ $row->android_version }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2 py-0.5 bg-indigo-50 rounded text-xs font-bold text-indigo-600">v{{ $row->app_version }}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-[10px] font-bold text-slate-700 mb-0.5">Installed: {{ $row->installed_at?->format('d M, h:i A') ?: 'N/A' }}</div>
+                            <div class="text-[10px] text-slate-400">Active: {{ $row->last_active_at?->diffForHumans() ?: 'N/A' }}</div>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
     @include('admin.components.pagination', ['paginator' => $installations])
 </div>
 @endsection
 
 @push('scripts')
 <script>
-new Chart(document.getElementById('dailyInstalls'), {type:'bar', data:{labels:@json($daily->pluck('label')), datasets:[{data:@json($daily->pluck('total')), backgroundColor:'#2563eb'}]}, options:{plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}});
-new Chart(document.getElementById('deviceChart'), {type:'doughnut', data:{labels:@json($devices->pluck('device_brand')), datasets:[{data:@json($devices->pluck('total')), backgroundColor:['#2563eb','#059669','#d97706','#dc2626','#7c3aed','#0891b2']}] }});
+$(function() {
+    new Chart(document.getElementById('dailyInstalls'), {
+        type: 'bar',
+        data: {
+            labels: @json($daily->pluck('label')),
+            datasets: [{
+                label: 'Installs',
+                data: @json($daily->pluck('total')),
+                backgroundColor: '#4f46e5',
+                borderRadius: 8,
+                hoverBackgroundColor: '#4338ca'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: '#f1f5f9', drawBorder: false } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    new Chart(document.getElementById('deviceChart'), {
+        type: 'doughnut',
+        data: {
+            labels: @json($devices->pluck('device_brand')),
+            datasets: [{
+                data: @json($devices->pluck('total')),
+                backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'],
+                borderWidth: 4,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { usePointStyle: true, padding: 20, font: { size: 11, weight: '600' } }
+                }
+            }
+        }
+    });
+});
 </script>
 @endpush
+

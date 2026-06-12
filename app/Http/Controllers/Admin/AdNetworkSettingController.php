@@ -8,6 +8,7 @@ use App\Models\AdNetworkSetting;
 use App\Models\AndroidApp;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AdNetworkSettingController extends Controller
@@ -39,6 +40,17 @@ class AdNetworkSettingController extends Controller
                 'main_click_count' => 1,
                 'inner_click_count' => 1,
                 'dialog_time_seconds' => 2,
+                'ad_splash' => 'splash_appopen',
+                'ad_inter' => 'admob',
+                'ad_appopen' => 'appopen',
+                'ad_native' => 'admob',
+                'ad_small_native' => 'admob',
+                'ad_banner' => 'admob',
+                'ad_qureka' => 'off',
+                'download_status' => 'off',
+                'background_status' => 'off',
+                'popup_status' => 'off',
+                'main_click_status' => 'on',
             ]),
             'apps' => AndroidApp::query()->orderBy('name')->get(),
         ]);
@@ -47,7 +59,7 @@ class AdNetworkSettingController extends Controller
     public function store(AdNetworkSettingRequest $request): RedirectResponse
     {
         AdNetworkSetting::query()->updateOrCreate(
-            ['app_id' => $request->integer('app_id')],
+            ['app_id' => $this->appDatabaseId($request)],
             $this->payload($request),
         );
 
@@ -78,14 +90,48 @@ class AdNetworkSettingController extends Controller
 
     private function payload(AdNetworkSettingRequest $request): array
     {
-        return $request->validated() + [
+        $payload = AdNetworkSetting::normalizePayload($request->validated() + [
             'is_active' => false,
             'ad_show_status' => false,
             'admob_status' => false,
+            'how_show_ad' => 0,
+            'main_click_count' => 1,
+            'inner_click_count' => 1,
             'dialog_before_ad_show' => false,
+            'dialog_time_seconds' => 2,
             'need_internet' => false,
             'redirect_other_app_status' => false,
             'update_dialog_status' => false,
-        ];
+        ]);
+
+        $payload['app_id'] = $this->appDatabaseId($request);
+
+        return $payload;
+    }
+
+    private function appDatabaseId(AdNetworkSettingRequest $request): int
+    {
+        $data = $request->validated();
+
+        if (! empty($data['app_db_id'])) {
+            return (int) $data['app_db_id'];
+        }
+
+        if (! empty($data['app_package_name']) || ! empty($data['package_name'])) {
+            $packageName = $data['app_package_name'] ?? $data['package_name'];
+            $app = AndroidApp::query()->where('package_name', $packageName)->first();
+
+            if ($app) {
+                return $app->id;
+            }
+        }
+
+        if (! empty($data['app_id']) && is_numeric($data['app_id'])) {
+            return (int) $data['app_id'];
+        }
+
+        throw ValidationException::withMessages([
+            'app_package_name' => ['App not found. Send app_package_name, package_name, app_db_id, or numeric app_id.'],
+        ]);
     }
 }

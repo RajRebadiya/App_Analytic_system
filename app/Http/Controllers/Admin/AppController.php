@@ -8,7 +8,6 @@ use App\Models\AndroidApp;
 use App\Services\AppProvisioningService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -58,14 +57,6 @@ class AppController extends Controller
         return back()->with('status', 'App deleted.');
     }
 
-    public function toggle(AndroidApp $app, string $field): RedirectResponse
-    {
-        abort_unless(in_array($field, ['force_update', 'maintenance_mode'], true), 404);
-        $app->update([$field => ! $app->{$field}]);
-
-        return back()->with('status', 'Setting updated.');
-    }
-
     public function status(AndroidApp $app, string $status): RedirectResponse
     {
         abort_unless(in_array($status, ['active', 'inactive'], true), 404);
@@ -74,19 +65,12 @@ class AppController extends Controller
         return back()->with('status', 'App status updated.');
     }
 
-    public function rotateKey(AndroidApp $app): RedirectResponse
-    {
-        $app->update(['api_key' => Str::random(64)]);
-
-        return back()->with('status', 'API key rotated.');
-    }
-
     public function export(): StreamedResponse
     {
         return response()->streamDownload(function (): void {
             $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['ID', 'Name', 'App ID', 'Package', 'Latest Version', 'Status']);
-            AndroidApp::query()->orderBy('name')->each(fn (AndroidApp $app) => fputcsv($handle, [$app->id, $app->name, $app->app_id, $app->package_name, $app->latest_version, $app->status]));
+            fputcsv($handle, ['ID', 'Name', 'Package', 'Current Version', 'Status']);
+            AndroidApp::query()->orderBy('name')->each(fn (AndroidApp $app) => fputcsv($handle, [$app->id, $app->name, $app->package_name, $app->current_version, $app->status]));
             fclose($handle);
         }, 'apps.csv');
     }

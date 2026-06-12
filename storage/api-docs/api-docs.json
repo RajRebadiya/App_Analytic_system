@@ -10,28 +10,18 @@
                 "tags": [
                     "Universal"
                 ],
-                "description": "Universal single API endpoint.\n\nActions available for module apps: list, create, show, update, delete, install, heartbeat.\n\nAdmin app CRUD examples:\n- List: {\"module\":\"apps\",\"action\":\"list\"}\n- Create: {\"module\":\"apps\",\"action\":\"create\",\"payload\":{\"name\":\"Jivanand\",\"version\":\"1.0.0\"}}\n- Show: {\"module\":\"apps\",\"action\":\"show\",\"id\":2}\n- Update: {\"module\":\"apps\",\"action\":\"update\",\"id\":2,\"payload\":{\"name\":\"Jivanand\",\"version\":\"1.1.0\"}}\n- Delete: {\"module\":\"apps\",\"action\":\"delete\",\"id\":2}\n\nInstall and heartbeat credentials:\n- Option 1 headers: X-App-Id and X-App-Key\n- Option 2 payload: app_id and api_key\n\nInstall payload example: {\"module\":\"apps\",\"action\":\"install\",\"payload\":{\"app_id\":\"jivanand-abc123\",\"api_key\":\"secret-key\",\"device_id\":\"device-12345\",\"device_name\":\"Pixel 8\",\"device_brand\":\"Google\",\"android_version\":\"15\",\"app_version\":\"1.0.0\"}}\n\nHeartbeat payload example: {\"module\":\"apps\",\"action\":\"heartbeat\",\"payload\":{\"app_id\":\"jivanand-abc123\",\"api_key\":\"secret-key\",\"device_id\":\"device-12345\",\"app_version\":\"1.0.0\"}}",
+                "description": "Universal single API endpoint.\n\nActions available for module apps: list, create, show, update, delete, install, heartbeat, save-token/save-fcm.\n\nAdmin app CRUD examples:\n- List: {\"module\":\"apps\",\"action\":\"list\"}\n- Create: {\"module\":\"apps\",\"action\":\"create\",\"payload\":{\"name\":\"Jivanand\",\"package_name\":\"com.example.jivanand\"}}\n- Show: {\"module\":\"apps\",\"action\":\"show\",\"id\":2}\n- Update: {\"module\":\"apps\",\"action\":\"update\",\"id\":2,\"payload\":{\"name\":\"Jivanand\",\"package_name\":\"com.example.jivanand\"}}\n- Delete: {\"module\":\"apps\",\"action\":\"delete\"}\n\nApp credential: send app_package_name header or payload.app_package_name.\n\nInstall payload example: {\"module\":\"apps\",\"action\":\"install\",\"payload\":{\"app_package_name\":\"com.example.jivanand\",\"device_id\":\"device-12345\",\"device_name\":\"Pixel 8\",\"device_brand\":\"Google\",\"android_version\":\"15\",\"app_version\":\"1.0.0\"}}\n\nHeartbeat payload example: {\"module\":\"apps\",\"action\":\"heartbeat\",\"payload\":{\"app_package_name\":\"com.example.jivanand\",\"device_id\":\"device-12345\",\"app_version\":\"1.0.0\"}}\n\nSave FCM token example: {\"module\":\"apps\",\"action\":\"save-token\",\"payload\":{\"app_package_name\":\"com.example.jivanand\",\"device_id\":\"device-12345\",\"fcm_token\":\"firebase-device-token\",\"is_active\":true}}",
                 "operationId": "32fdd17c7a7cafddc0842897745774c5",
                 "parameters": [
                     {
-                        "name": "X-App-Id",
+                        "name": "app_package_name",
                         "in": "header",
-                        "description": "Optional for install/heartbeat when app_id is not sent inside payload.",
+                        "description": "Optional when app_package_name is sent inside payload.",
                         "required": false,
                         "schema": {
                             "type": "string"
                         },
-                        "example": "jivanand-abc123"
-                    },
-                    {
-                        "name": "X-App-Key",
-                        "in": "header",
-                        "description": "Optional for install/heartbeat when api_key is not sent inside payload.",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "secret-key"
+                        "example": "com.example.jivanand"
                     }
                 ],
                 "requestBody": {
@@ -66,11 +56,117 @@
                         }
                     },
                     "401": {
-                        "description": "Invalid app credentials",
+                        "description": "Invalid app package name",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/ad-config": {
+            "get": {
+                "tags": [
+                    "Android App"
+                ],
+                "description": "Fetch Android ad config in the new mobile contract. Response data is always an array with one object.",
+                "operationId": "b8732bf5584a8e344130c3d2992ade9b",
+                "parameters": [
+                    {
+                        "name": "app_package_name",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "com.example.jivanand"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ad config fetched",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdConfigResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid app package name",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiSuccess"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/api/v1"
+                    }
+                ]
+            }
+        },
+        "/admin/ad-settings": {
+            "post": {
+                "tags": [
+                    "Admin Ad Settings"
+                ],
+                "description": "Create or update ad settings. Payload accepts the same ad config keys returned to the Android app. Identify the app with app_package_name, package_name, app_db_id, or numeric app_id.",
+                "operationId": "7c03e15ff27fdba417f1bb764772b90d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdConfigPayload"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ad settings saved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ad settings saved"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/AdConfigPayload"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -128,8 +224,208 @@
                 },
                 "type": "object"
             },
+            "AdConfigPayload": {
+                "properties": {
+                    "app_name": {
+                        "type": "string",
+                        "example": "My News App"
+                    },
+                    "app_db_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "app_package_name": {
+                        "type": "string",
+                        "example": "com.example.jivanand"
+                    },
+                    "package_name": {
+                        "type": "string",
+                        "example": "com.appanalytics.mynewsapp.abc12345"
+                    },
+                    "admob_interid": {
+                        "type": "string",
+                        "example": "ca-app-pub-3940256099942544/1033173712"
+                    },
+                    "admob_bannerid": {
+                        "type": "string",
+                        "example": "ca-app-pub-3940256099942544/6300978111"
+                    },
+                    "admob_medium_rectangleid": {
+                        "type": "string",
+                        "example": "ca-app-pub-3940256099942544/6300978111"
+                    },
+                    "admob_nativeid": {
+                        "type": "string",
+                        "example": "ca-app-pub-3940256099942544/2247696110"
+                    },
+                    "admob_appopenid": {
+                        "type": "string",
+                        "example": "ca-app-pub-3940256099942544/9257395921"
+                    },
+                    "adx_inter_id": {
+                        "type": "string",
+                        "example": "499/example/interstitial"
+                    },
+                    "adx_banner_id": {
+                        "type": "string",
+                        "example": "499/example/adaptive-banner"
+                    },
+                    "adx_medium_rectangleid": {
+                        "type": "string",
+                        "example": "499/example/adaptive-banner"
+                    },
+                    "adx_native_id": {
+                        "type": "string",
+                        "example": "499/example/native"
+                    },
+                    "adx_appopen_id": {
+                        "type": "string",
+                        "example": "499/example/app-open"
+                    },
+                    "fb_inter_id": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "fb_banner_id": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "fb_medium_rectangle_id": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "fb_native_id": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "fb_native_banner_id": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "wortise_app_id": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "wortise_appopen_id": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "wortise_inter_id": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "wortise_banner_id": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "wortise_medium_rectangle_id": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "wortise_native_id": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "inter_count": {
+                        "type": "string",
+                        "example": "2"
+                    },
+                    "ad_splash": {
+                        "type": "string",
+                        "example": "splash_appopen"
+                    },
+                    "ad_inter": {
+                        "type": "string",
+                        "example": "admob"
+                    },
+                    "ad_appopen": {
+                        "type": "string",
+                        "example": "appopen"
+                    },
+                    "ad_native": {
+                        "type": "string",
+                        "example": "admob"
+                    },
+                    "ad_small_native": {
+                        "type": "string",
+                        "example": "admob"
+                    },
+                    "ad_banner": {
+                        "type": "string",
+                        "example": "admob"
+                    },
+                    "ad_qureka": {
+                        "type": "string",
+                        "example": "off"
+                    },
+                    "privacy_url": {
+                        "type": "string",
+                        "example": "https://example.com/privacy-policy.html"
+                    },
+                    "redirect_app": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "new_app_name": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "new_app_icon": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "new_app_banner": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "new_app_body": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "new_app_link": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "Download": {
+                        "type": "string",
+                        "example": "off"
+                    },
+                    "Backgraound": {
+                        "type": "string",
+                        "example": "off"
+                    },
+                    "Popup": {
+                        "type": "string",
+                        "example": "off"
+                    },
+                    "Main_click": {
+                        "type": "string",
+                        "example": "on"
+                    }
+                },
+                "type": "object"
+            },
+            "AdConfigResponse": {
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Ad config fetched"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AdConfigPayload"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "UniversalRequest": {
-                "description": "Single endpoint request. Supported actions for apps: list, create, show, update, delete, install, heartbeat. For install and heartbeat, app credentials can be sent either as headers X-App-Id and X-App-Key, or inside payload as app_id and api_key.",
+                "description": "Single endpoint request. Supported actions for apps: list, create, show, update, delete, install, heartbeat, save-token. For install, heartbeat, and save-token, identify the app with app_package_name header or payload.app_package_name.",
                 "required": [
                     "module",
                     "action"
@@ -144,7 +440,7 @@
                         ]
                     },
                     "action": {
-                        "description": "Available actions: list, create, show, update, delete, install, heartbeat.",
+                        "description": "Available actions: list, create, show, update, delete, install, heartbeat, save-token.",
                         "type": "string",
                         "example": "create",
                         "enum": [
@@ -154,7 +450,9 @@
                             "update",
                             "delete",
                             "install",
-                            "heartbeat"
+                            "heartbeat",
+                            "save-token",
+                            "save-fcm"
                         ]
                     },
                     "id": {
@@ -164,11 +462,11 @@
                         "nullable": true
                     },
                     "payload": {
-                        "description": "Action payload. create/update use name and version. install uses device_id, device_name, device_brand, android_version, app_version. heartbeat uses device_id and optional app_version. install/heartbeat may also include app_id and api_key.",
+                        "description": "Action payload. create/update use name and package_name. install uses device_id, device_name, device_brand, android_version, app_version. heartbeat uses device_id and optional app_version. save-token uses device_id, fcm_token, and optional is_active.",
                         "type": "object",
                         "example": {
                             "name": "Jivanand",
-                            "version": "1.0.0"
+                            "package_name": "com.example.jivanand"
                         }
                     }
                 },
@@ -176,9 +474,9 @@
             }
         },
         "securitySchemes": {
-            "AppApiKey": {
+            "AppPackageName": {
                 "type": "apiKey",
-                "name": "X-App-Key",
+                "name": "app_package_name",
                 "in": "header"
             }
         }
@@ -187,6 +485,14 @@
         {
             "name": "Universal",
             "description": "Universal"
+        },
+        {
+            "name": "Android App",
+            "description": "Android App"
+        },
+        {
+            "name": "Admin Ad Settings",
+            "description": "Admin Ad Settings"
         }
     ]
 }

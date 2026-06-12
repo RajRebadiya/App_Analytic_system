@@ -31,10 +31,9 @@ class AppVersionController extends Controller
 
     public function store(AppVersionRequest $request): RedirectResponse
     {
-        $version = AppVersion::query()->create($request->validated());
-        $version->app->update($request->only(['latest_version', 'min_supported_version', 'force_update', 'maintenance_mode']));
+        AppVersion::query()->create($request->validated());
 
-        return redirect()->route('admin.versions.index')->with('status', 'Version created and app version settings synced.');
+        return redirect()->route('admin.versions.index')->with('status', 'Version created.');
     }
 
     public function edit(AppVersion $version): View
@@ -45,7 +44,6 @@ class AppVersionController extends Controller
     public function update(AppVersionRequest $request, AppVersion $version): RedirectResponse
     {
         $version->update($request->validated());
-        $version->app->update($request->only(['latest_version', 'min_supported_version', 'force_update', 'maintenance_mode']));
 
         return redirect()->route('admin.versions.index')->with('status', 'Version updated.');
     }

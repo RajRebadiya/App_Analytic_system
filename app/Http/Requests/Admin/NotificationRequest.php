@@ -15,16 +15,16 @@ class NotificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'app_id' => ['required', 'exists:apps,id'],
+            'app_id' => ['nullable', 'exists:apps,id'],
             'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
+            'description' => ['required', 'string'],
             'image' => ['nullable', 'string', 'max:2048'],
-            'image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'redirect_screen' => ['nullable', 'string', 'max:120'],
             'redirect_data' => ['nullable', 'array'],
             'send_now' => ['sometimes', 'boolean'],
-            'notification_type' => ['required', 'string', 'max:32'],
-            'send_to' => ['required', Rule::in(['all', 'active'])],
+            'notification_type' => ['nullable', 'string', 'max:32'],
+            'send_to' => ['nullable', Rule::in(['all', 'active'])],
         ];
     }
 }

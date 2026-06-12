@@ -16,16 +16,12 @@ class AdConfigController extends Controller
     {
         /** @var AndroidApp $app */
         $app = $request->attributes->get('android_app');
-        $setting = $app->adNetworkSetting()->first();
+        $setting = $app->adNetworkSetting()->with('app')->first();
 
-        if (! $setting || ! $setting->is_active) {
-            return $this->success('Ad config fetched', [
-                'is_active' => false,
-                'app_adShowStatus' => 0,
-                'am_ad_showAdStatus' => 0,
-            ]);
+        if (! $setting) {
+            return $this->error('Ad config not found', 404);
         }
 
-        return $this->success('Ad config fetched', $setting->toAndroidPayload());
+        return $this->success('Ad config fetched', [$setting->toAndroidPayload()]);
     }
 }

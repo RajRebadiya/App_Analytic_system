@@ -10,6 +10,7 @@ use App\Services\Admin\AdminNotificationService;
 use App\Services\Admin\FileUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class NotificationController extends Controller
@@ -34,22 +35,43 @@ class NotificationController extends Controller
 
     public function create(): View
     {
-        return view('admin.notifications.form', ['notification' => new PushNotification, 'apps' => AndroidApp::query()->orderBy('name')->get()]);
+        return view('admin.notifications.form', ['notification' => new PushNotification]);
     }
 
     public function store(NotificationRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $app = AndroidApp::query()->orderBy('id')->first();
+
+        if (! $app) {
+            throw ValidationException::withMessages([
+                'app_id' => ['Create at least one app before sending a push notification.'],
+            ]);
+        }
+
+        $data['app_id'] = $data['app_id'] ?? $app->id;
         $data['image'] = $this->uploads->image($request->file('image_file'), 'notifications') ?? ($data['image'] ?? null);
-        $data['created_by'] = $request->user()->id;
+        $data['created_by'] = $request->user()?->id;
+        $data['notification_type'] = $data['notification_type'] ?? 'onesignal';
+        $data['send_to'] = $data['send_to'] ?? 'all';
+        $data['status'] = 'pending';
         unset($data['image_file'], $data['send_now']);
         $notification = PushNotification::query()->create($data);
 
-        if ($request->boolean('send_now')) {
-            $this->notifications->send($notification);
+        $result = $this->notifications->send($notification);
+
+        if (! $result['successful']) {
+            return redirect()
+                ->route('admin.notifications.show', $notification)
+                ->withErrors(['onesignal' => $this->errorMessage($result)]);
         }
 
-        return redirect()->route('admin.notifications.index')->with('status', $request->boolean('send_now') ? 'Notification created and queued.' : 'Notification created.');
+        return redirect()->route('admin.notifications.show', $notification)->with('status', 'Notification sent successfully.');
+    }
+
+    public function show(PushNotification $notification): View
+    {
+        return view('admin.notifications.show', ['notification' => $notification->loadMissing('creator')]);
     }
 
     public function edit(PushNotification $notification): View
@@ -76,13 +98,32 @@ class NotificationController extends Controller
 
     public function send(PushNotification $notification): RedirectResponse
     {
-        $this->notifications->send($notification);
+        $result = $this->notifications->send($notification);
 
-        return back()->with('status', 'Notification queued for background sending.');
+        if (! $result['successful']) {
+            return back()->withErrors(['onesignal' => $this->errorMessage($result)]);
+        }
+
+        return back()->with('status', 'Notification sent successfully.');
     }
 
     public function logs(PushNotification $notification): View
     {
         return view('admin.notifications.logs', ['notification' => $notification, 'logs' => $notification->logs()->latest()->paginate(25)]);
+    }
+
+    private function errorMessage(array $result): string
+    {
+        $response = $result['response'] ?? [];
+
+        if (isset($response['errors'])) {
+            return is_array($response['errors']) ? implode(' ', $response['errors']) : (string) $response['errors'];
+        }
+
+        if (isset($response['error'])) {
+            return (string) $response['error'];
+        }
+
+        return 'OneSignal API request failed.';
     }
 }

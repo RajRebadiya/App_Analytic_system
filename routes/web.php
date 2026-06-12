@@ -39,13 +39,11 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/', DashboardController::class)->name('dashboard');
         Route::get('apps/export', [AppController::class, 'export'])->name('apps.export');
         Route::patch('apps/{app}/status/{status}', [AppController::class, 'status'])->name('apps.status');
-        Route::patch('apps/{app}/toggle/{field}', [AppController::class, 'toggle'])->name('apps.toggle');
-        Route::patch('apps/{app}/rotate-key', [AppController::class, 'rotateKey'])->name('apps.rotate-key');
         Route::resource('apps', AppController::class)->except(['show']);
 
         Route::resource('advertisements', AdvertisementController::class)->except(['show']);
         Route::resource('ad-settings', AdNetworkSettingController::class)->except(['show'])->parameters(['ad-settings' => 'adSetting']);
-        Route::resource('notifications', NotificationController::class)->except(['show']);
+        Route::resource('notifications', NotificationController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
         Route::post('notifications/{notification}/send', [NotificationController::class, 'send'])->name('notifications.send');
         Route::get('notifications/{notification}/logs', [NotificationController::class, 'logs'])->name('notifications.logs');
         Route::resource('versions', AppVersionController::class)->except(['show']);

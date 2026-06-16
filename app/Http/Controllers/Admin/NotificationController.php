@@ -52,7 +52,7 @@ class NotificationController extends Controller
             ]);
         }
 
-        $data['image'] = $this->uploads->image($request->file('image_file'), 'notifications') ?? ($data['image'] ?? null);
+        $data['image'] = $this->uploads->publicImage($request->file('image_file'), 'notification') ?? ($data['image'] ?? null);
         $data['created_by'] = $request->user()?->id;
         $data['notification_type'] = $data['notification_type'] ?? 'onesignal';
         $data['send_to'] = $data['send_to'] ?? 'all';
@@ -92,7 +92,7 @@ class NotificationController extends Controller
                 'app_id' => ['Selected app could not be found.'],
             ]);
         }
-        $data['image'] = $this->uploads->image($request->file('image_file'), 'notifications') ?? ($data['image'] ?? $notification->image);
+        $data['image'] = $this->uploads->publicImage($request->file('image_file'), 'notification') ?? ($data['image'] ?? $notification->image);
         unset($data['image_file'], $data['send_now']);
         $notification->update($data);
 

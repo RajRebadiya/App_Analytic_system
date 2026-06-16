@@ -5,7 +5,6 @@ namespace App\Services\Admin;
 use App\Models\PushNotification;
 use App\Services\OneSignalNotificationService;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class AdminNotificationService
 {
@@ -68,6 +67,11 @@ class AdminNotificationService
             return $image;
         }
 
-        return url(Storage::disk('public')->url($image));
+        $image = str_replace('\\', '/', $image);
+        $image = ltrim($image, '/');
+        $image = preg_replace('#^(storage/|public/)#', '', $image) ?? $image;
+        $image = preg_replace('#^notifications/#', 'notification/', $image) ?? $image;
+
+        return url($image);
     }
 }

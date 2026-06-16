@@ -22,35 +22,39 @@ Create your first admin account. After registration, you will be logged in autom
 
 ## 2. Admin Adds an App
 
-Go to:
+Go to main:
 
 ```text
 Admin Panel -> Apps -> Add App
 ```
 
-You only enter:
+You enter:
 
 - App Name
+- Package Name
 - Version
 
 Example:
 
 ```text
 App Name: My News App
+Package Name: com.example.mynewsapp
 Version: 1.0.0
 ```
 
 The system automatically generates:
 
 - App ID
-- Package Name
 - API Key
-- Current Version
 - Latest Version
 - Minimum Supported Version
 - Status
 - Force Update flag
 - Maintenance Mode flag
+
+You can edit App Name, Package Name, and Version later from the App edit screen.
+
+If you want to send notifications from this app, also save its OneSignal App ID and API Key once on the same App edit screen.
 
 After saving, go to the Apps list. You will see the app details, including `app_id` and `api_key`.
 
@@ -118,7 +122,7 @@ POST /event
 
 ## 5. Installation Tracking
 
-Call this once on first app launch, and safely call again if needed. Backend avoids duplicate installation records using `app_id + device_id`.
+Call this once on first app launch, and safely call again if needed. Backend keeps one current device row in `app_installations`, but every install or reinstall is also recorded in `app_install_events` so total install count increments again for the same device.
 
 Endpoint:
 
@@ -141,15 +145,17 @@ Body:
   "device_name": "Pixel 8",
   "device_brand": "Google",
   "android_version": "15",
+  "country_code": "IN",
   "app_version": "1.0.0"
 }
 ```
 
 Purpose:
 
-- Tracks total installs
+- Tracks total installs, including reinstalls on the same device
 - Tracks device details
 - Tracks Android version statistics
+- Tracks country-wise installs
 - Tracks app version statistics
 
 ## 6. Heartbeat / Daily Active Users
@@ -497,9 +503,12 @@ php artisan config:clear
 
 Admin selects:
 
+- Application
 - Title
 - Description
 - Image upload
+
+The selected application's OneSignal credentials are stored with the app edit screen and reused automatically for future notifications.
 
 Internal flow:
 
@@ -516,6 +525,8 @@ Admin Creates Notification
 Important:
 
 If OneSignal returns an error, the admin sees the API error and the exception is logged in Laravel logs.
+
+Notification images are rendered from the public storage URL so thumbnails and detail views match the uploaded asset.
 
 Android handling:
 
@@ -552,10 +563,13 @@ Dashboard shows:
 - Event trends
 - Recent API activity
 
+Admin date filters and schedule fields use Flatpickr so start/end dates are picked consistently in the UI.
+
 Admin can filter dashboard by:
 
 - App
 - Date range
+- Country code
 
 ## 13. API Logs Flow
 
@@ -575,6 +589,7 @@ Tracked fields:
 
 - Method
 - Path
+- Action
 - Status code
 - Response time
 - App ID
@@ -683,7 +698,7 @@ Admin:
 ```text
 1. Register admin
 2. Login
-3. Add app: My News App, version 1.0.0
+3. Add app: My News App, package name and version 1.0.0
 4. Copy App ID and API Key from Apps list
 5. Give App ID and API Key to Android developer
 6. Create ads if needed

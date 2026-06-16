@@ -13,10 +13,12 @@ class LogApiRequest
     {
         $startedAt = microtime(true);
         $response = $next($request);
+        $action = $this->resolveAction($request);
 
         ApiLog::query()->create([
             'method' => $request->method(),
             'path' => $request->path(),
+            'action' => $action,
             'status_code' => $response->getStatusCode(),
             'response_time_ms' => (int) ((microtime(true) - $startedAt) * 1000),
             'ip_address' => $request->ip(),
@@ -46,5 +48,28 @@ class LogApiRequest
         $decoded = json_decode($content, true);
 
         return is_array($decoded) ? $decoded : null;
+    }
+
+    private function resolveAction(Request $request): ?string
+    {
+        $path = trim($request->path(), '/');
+
+        if ($path === 'api/v1/universal' || $path === 'universal') {
+            $module = $request->input('module');
+            $action = $request->input('action');
+
+            if ($module && $action) {
+                return strtolower($module).'/'.strtolower($action);
+            }
+
+            return 'universal';
+        }
+
+        $route = $request->route();
+
+        return $route?->getName()
+            ?? ($route?->getActionName() && $route->getActionName() !== 'Closure'
+                ? $route->getActionName()
+                : $request->method().' '.$request->path());
     }
 }

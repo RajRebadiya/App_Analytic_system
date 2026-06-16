@@ -35,13 +35,16 @@ class NotificationController extends Controller
 
     public function create(): View
     {
-        return view('admin.notifications.form', ['notification' => new PushNotification]);
+        return view('admin.notifications.form', [
+            'notification' => new PushNotification,
+            'apps' => AndroidApp::query()->orderBy('name')->get(),
+        ]);
     }
 
     public function store(NotificationRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        $app = AndroidApp::query()->orderBy('id')->first();
+        $app = AndroidApp::query()->find($data['app_id']);
 
         if (! $app) {
             throw ValidationException::withMessages([
@@ -49,12 +52,12 @@ class NotificationController extends Controller
             ]);
         }
 
-        $data['app_id'] = $data['app_id'] ?? $app->id;
         $data['image'] = $this->uploads->image($request->file('image_file'), 'notifications') ?? ($data['image'] ?? null);
         $data['created_by'] = $request->user()?->id;
         $data['notification_type'] = $data['notification_type'] ?? 'onesignal';
         $data['send_to'] = $data['send_to'] ?? 'all';
         $data['status'] = 'pending';
+        $data['app_id'] = $app->id;
         unset($data['image_file'], $data['send_now']);
         $notification = PushNotification::query()->create($data);
 
@@ -82,6 +85,13 @@ class NotificationController extends Controller
     public function update(NotificationRequest $request, PushNotification $notification): RedirectResponse
     {
         $data = $request->validated();
+        $app = AndroidApp::query()->find($data['app_id']);
+
+        if (! $app) {
+            throw ValidationException::withMessages([
+                'app_id' => ['Selected app could not be found.'],
+            ]);
+        }
         $data['image'] = $this->uploads->image($request->file('image_file'), 'notifications') ?? ($data['image'] ?? $notification->image);
         unset($data['image_file'], $data['send_now']);
         $notification->update($data);
@@ -126,4 +136,5 @@ class NotificationController extends Controller
 
         return 'OneSignal API request failed.';
     }
+
 }

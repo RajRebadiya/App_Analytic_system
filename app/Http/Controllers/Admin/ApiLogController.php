@@ -13,7 +13,11 @@ class ApiLogController extends Controller
     {
         $logs = ApiLog::query()
             ->when($request->status_code, fn ($query, int $status) => $query->where('status_code', $status))
-            ->when($request->search, fn ($query, string $search) => $query->where('path', 'like', "%{$search}%")->orWhere('ip_address', 'like', "%{$search}%"))
+            ->when($request->search, fn ($query, string $search) => $query->where(function ($query) use ($search) {
+                $query->where('path', 'like', "%{$search}%")
+                    ->orWhere('action', 'like', "%{$search}%")
+                    ->orWhere('ip_address', 'like', "%{$search}%");
+            }))
             ->latest()
             ->paginate(25)
             ->withQueryString();

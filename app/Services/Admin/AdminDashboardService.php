@@ -13,7 +13,6 @@ class AdminDashboardService
     {
         $installs = $this->repository->installTrend($filters);
         $activity = $this->repository->activityTrend($filters);
-        $events = $this->repository->eventBreakdown($filters);
 
         return [
             'apps' => AndroidApp::query()->orderBy('name')->get(),
@@ -25,8 +24,6 @@ class AdminDashboardService
                 'installData' => $installs->pluck('total'),
                 'activityLabels' => $activity->pluck('label'),
                 'activityData' => $activity->pluck('total'),
-                'eventLabels' => $events->pluck('event_name'),
-                'eventData' => $events->pluck('total'),
             ],
         ];
     }

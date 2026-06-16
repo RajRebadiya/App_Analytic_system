@@ -35,6 +35,7 @@
                 <tr>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Application</th>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Device Identifier</th>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Country</th>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Hardware / OS</th>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">App Version</th>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Timestamp</th>
@@ -51,6 +52,11 @@
                             <div class="text-xs font-medium text-slate-600 truncate max-w-[120px]" title="{{ $row->device_id }}">
                                 {{ $row->device_id }}
                             </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2 py-0.5 bg-emerald-50 rounded text-xs font-bold text-emerald-700">
+                                {{ $row->country_code ?: 'N/A' }}
+                            </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center gap-2">
@@ -126,4 +132,3 @@ $(function() {
 });
 </script>
 @endpush
-

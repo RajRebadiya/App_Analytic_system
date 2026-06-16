@@ -11,7 +11,7 @@
                 <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Application Details</h3>
             </div>
             
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
                     <label for="name" class="block text-sm font-bold text-slate-700 mb-2">App Name</label>
                     <input type="text" name="name" id="name" value="{{ old('name', $app->name) }}" required
@@ -32,6 +32,32 @@
                     </div>
                     <p class="mt-2 text-xs text-slate-500 font-medium">Unique Android package name (e.g., com.example.app).</p>
                 </div>
+
+                <div>
+                    <label for="current_version" class="block text-sm font-bold text-slate-700 mb-2">Current Version</label>
+                    <input type="text" name="current_version" id="current_version" value="{{ old('current_version', $app->current_version ?: '1.0.0') }}" required
+                           class="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm"
+                           placeholder="1.0.0">
+                    <p class="mt-2 text-xs text-slate-500 font-medium">Version shown to the app and used for update checks.</p>
+                </div>
+            </div>
+
+            <div class="px-6 pb-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <label for="onesignal_app_id" class="block text-sm font-bold text-slate-700 mb-2">OneSignal App ID</label>
+                    <input type="text" name="onesignal_app_id" id="onesignal_app_id" value="{{ old('onesignal_app_id', $app->onesignal_app_id) }}"
+                           class="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm"
+                           placeholder="1eeedc9d-d959-47ed-b7f8-c138f4ba02e7">
+                    <p class="mt-2 text-xs text-slate-500 font-medium">Save it once here. Notifications will reuse this app-level credential.</p>
+                </div>
+
+                <div>
+                    <label for="onesignal_api_key" class="block text-sm font-bold text-slate-700 mb-2">OneSignal API Key</label>
+                    <input type="password" name="onesignal_api_key" id="onesignal_api_key" value="{{ old('onesignal_api_key', $app->onesignal_api_key) }}"
+                           class="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm"
+                           placeholder="os_v2_app_...">
+                    <p class="mt-2 text-xs text-slate-500 font-medium">Stored against this app and used automatically for sending notifications.</p>
+                </div>
             </div>
 
             <div class="px-6 py-4 bg-indigo-50/50 border-t border-indigo-100">
@@ -41,7 +67,7 @@
                     </div>
                     <div class="ml-3">
                         <p class="text-xs font-bold text-indigo-800">System Defaults</p>
-                        <p class="text-xs text-indigo-700 font-medium mt-0.5">Initial version is set to 1.0.0. App credentials (ID and Key) will be generated automatically upon saving.</p>
+                        <p class="text-xs text-indigo-700 font-medium mt-0.5">OneSignal credentials are saved once at the app level and reused for future notifications.</p>
                     </div>
                 </div>
             </div>
@@ -59,4 +85,3 @@
     </form>
 </div>
 @endsection
-

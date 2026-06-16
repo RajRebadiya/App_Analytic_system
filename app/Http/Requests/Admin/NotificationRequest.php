@@ -15,7 +15,7 @@ class NotificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'app_id' => ['nullable', 'exists:apps,id'],
+            'app_id' => ['required', 'exists:apps,id'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'image' => ['nullable', 'string', 'max:2048'],

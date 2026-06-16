@@ -7,9 +7,11 @@
     <title>{{ $title ?? 'Admin' }} | {{ config('app.name') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -71,6 +73,29 @@
         $(function () {
             // Initialize Lucide icons
             lucide.createIcons();
+
+            // Flatpickr date inputs
+            if (window.flatpickr) {
+                document.querySelectorAll('[data-flatpickr-date]').forEach((input) => {
+                    flatpickr(input, {
+                        dateFormat: 'Y-m-d',
+                        altInput: true,
+                        altFormat: 'M j, Y',
+                        allowInput: true,
+                    });
+                });
+
+                document.querySelectorAll('[data-flatpickr-datetime]').forEach((input) => {
+                    flatpickr(input, {
+                        enableTime: true,
+                        time_24hr: true,
+                        dateFormat: 'Y-m-d H:i',
+                        altInput: true,
+                        altFormat: 'M j, Y H:i',
+                        allowInput: true,
+                    });
+                });
+            }
             
             // Image preview helper
             $('[data-image-input]').on('change', function () {
@@ -94,4 +119,3 @@
     @stack('scripts')
 </body>
 </html>
-

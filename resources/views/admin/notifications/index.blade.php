@@ -13,6 +13,7 @@
         <table class="min-w-full divide-y divide-slate-200">
             <thead class="bg-slate-50">
                 <tr>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">App</th>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Content</th>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Visual</th>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
@@ -24,13 +25,17 @@
                 @foreach($notifications as $notification)
                     <tr class="hover:bg-slate-50/50 transition-colors duration-200 group">
                         <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-bold text-slate-900 truncate max-w-[180px]">{{ $notification->app?->name }}</div>
+                            <div class="text-[10px] text-slate-400 font-mono truncate max-w-[180px]">{{ $notification->app?->package_name }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-bold text-slate-900 truncate max-w-[200px]">{{ $notification->title }}</div>
                             <div class="text-xs text-slate-500 truncate max-w-[200px]">{{ $notification->description }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($notification->image)
                                 <div class="relative w-16 h-10 rounded-lg overflow-hidden border border-slate-200 shadow-sm">
-                                    <img class="w-full h-full object-cover" src="{{ str_starts_with($notification->image, 'http') ? $notification->image : asset('storage/'.$notification->image) }}" alt="">
+                                    <img class="w-full h-full object-cover" src="{{ $notification->image_url }}" alt="">
                                 </div>
                             @else
                                 <div class="w-16 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400">
@@ -83,4 +88,3 @@
     @include('admin.components.pagination', ['paginator' => $notifications])
 </div>
 @endsection
-

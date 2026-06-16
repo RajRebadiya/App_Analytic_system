@@ -13,6 +13,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('package_name')->unique();
             $table->string('current_version')->default('1.0.0');
+            $table->string('onesignal_app_id')->nullable();
+            $table->string('onesignal_api_key', 4096)->nullable();
             $table->string('status', 24)->default('active')->index();
             $table->timestamps();
         });
@@ -24,6 +26,7 @@ return new class extends Migration
             $table->string('device_name')->nullable();
             $table->string('device_brand')->nullable();
             $table->string('android_version', 32)->nullable();
+            $table->string('country_code', 8)->nullable()->index();
             $table->string('app_version', 32);
             $table->ipAddress('ip_address')->nullable();
             $table->timestamp('installed_at')->nullable();

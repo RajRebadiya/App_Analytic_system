@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AndroidApp;
+use App\Models\AppInstallEvent;
 use App\Models\AppEvent;
 use App\Models\AppInstallation;
 use App\Models\DeviceToken;
@@ -12,18 +13,36 @@ class AppManagementService
 {
     public function trackInstall(AndroidApp $app, array $data, ?string $ipAddress): AppInstallation
     {
-        return AppInstallation::query()->updateOrCreate(
+        $installation = AppInstallation::query()->updateOrCreate(
             ['app_id' => $app->id, 'device_id' => $data['device_id']],
             [
                 'device_name' => $data['device_name'] ?? null,
                 'device_brand' => $data['device_brand'] ?? null,
                 'android_version' => $data['android_version'] ?? null,
+                'country_code' => isset($data['country_code']) && $data['country_code'] !== ''
+                    ? strtoupper($data['country_code'])
+                    : null,
                 'app_version' => $data['app_version'],
                 'ip_address' => $ipAddress,
                 'installed_at' => Carbon::now(),
                 'last_active_at' => Carbon::now(),
             ],
         );
+
+        AppInstallEvent::query()->create([
+            'app_id' => $app->id,
+            'device_id' => $data['device_id'],
+            'device_name' => $data['device_name'] ?? null,
+            'device_brand' => $data['device_brand'] ?? null,
+            'android_version' => $data['android_version'] ?? null,
+            'country_code' => isset($data['country_code']) && $data['country_code'] !== ''
+                ? strtoupper($data['country_code'])
+                : null,
+            'app_version' => $data['app_version'],
+            'ip_address' => $ipAddress,
+        ]);
+
+        return $installation;
     }
 
     public function heartbeat(AndroidApp $app, array $data): AppInstallation

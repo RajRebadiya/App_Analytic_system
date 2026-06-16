@@ -14,9 +14,16 @@ class AdminNotificationService
     public function send(PushNotification $notification): array
     {
         try {
+            $app = $notification->app;
+            if (! $app?->onesignal_app_id || ! $app?->onesignal_api_key) {
+                throw new \RuntimeException('OneSignal credentials are missing for the selected app. Please set them in the app edit screen.');
+            }
+
             $result = $this->oneSignal->sendToAll(
                 $notification->title,
                 (string) $notification->description,
+                $app?->onesignal_app_id,
+                $app?->onesignal_api_key,
                 $this->publicImageUrl($notification->image),
             );
             $recipients = (int) data_get($result, 'response.recipients', 0);

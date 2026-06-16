@@ -117,6 +117,7 @@ class UniversalController extends Controller
             'device_name' => ['nullable', 'string', 'max:255'],
             'device_brand' => ['nullable', 'string', 'max:255'],
             'android_version' => ['nullable', 'string', 'max:32'],
+            'country_code' => ['nullable', 'string', 'size:2'],
             'app_version' => ['required', 'string', 'max:32'],
         ], $this->validationMessages())->validate();
         $app = $this->authenticatedApp($request, $payload);
@@ -152,6 +153,7 @@ class UniversalController extends Controller
         return [
             'name' => ['required', 'string', 'max:255'],
             'package_name' => ['required', 'string', 'max:255', Rule::unique('apps', 'package_name')->ignore($ignoreAppId)],
+            'current_version' => ['required', 'string', 'max:32'],
         ];
     }
 
@@ -208,10 +210,13 @@ class UniversalController extends Controller
             'device_id.max' => 'Device id may not be greater than 128 characters.',
             'app_version.required' => 'App version is required.',
             'app_version.max' => 'App version may not be greater than 32 characters.',
+            'country_code.size' => 'Country code must be a 2-letter ISO code.',
             'fcm_token.required' => 'FCM token is required.',
             'fcm_token.max' => 'FCM token may not be greater than 4096 characters.',
             'name.required' => 'App name is required.',
             'package_name.required' => 'Package name is required.',
+            'current_version.required' => 'Current version is required.',
+            'current_version.max' => 'Current version may not be greater than 32 characters.',
         ];
     }
 }

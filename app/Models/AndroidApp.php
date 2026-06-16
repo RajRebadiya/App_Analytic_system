@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'name',
     'package_name',
     'current_version',
+    'onesignal_app_id',
+    'onesignal_api_key',
     'status',
 ])]
 class AndroidApp extends Model
@@ -20,6 +22,11 @@ class AndroidApp extends Model
     public function installations(): HasMany
     {
         return $this->hasMany(AppInstallation::class, 'app_id');
+    }
+
+    public function installEvents(): HasMany
+    {
+        return $this->hasMany(AppInstallEvent::class, 'app_id');
     }
 
     public function deviceTokens(): HasMany

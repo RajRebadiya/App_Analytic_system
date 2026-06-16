@@ -18,6 +18,7 @@ class InstallRequest extends FormRequest
             'device_name' => ['nullable', 'string', 'max:255'],
             'device_brand' => ['nullable', 'string', 'max:255'],
             'android_version' => ['nullable', 'string', 'max:32'],
+            'country_code' => ['nullable', 'string', 'size:2'],
             'app_version' => ['required', 'string', 'max:32'],
         ];
     }

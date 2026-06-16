@@ -12,6 +12,22 @@
             
             <div class="p-6 space-y-6">
                 <div>
+                    <label for="app_id" class="block text-sm font-bold text-slate-700 mb-2">Select App</label>
+                    <select name="app_id" id="app_id" required class="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm @error('app_id') border-rose-300 bg-rose-50 @enderror">
+                        <option value="">Choose an app</option>
+                        @foreach($apps as $app)
+                            <option value="{{ $app->id }}" @selected(old('app_id', $notification->app_id) == $app->id)>{{ $app->name }} ({{ $app->package_name }})</option>
+                        @endforeach
+                    </select>
+                    @error('app_id')<p class="mt-1 text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
+                    <p class="mt-2 text-xs text-slate-500 font-medium">App-level OneSignal credentials are configured in the App edit screen and reused automatically.</p>
+                </div>
+
+                <div class="border-t border-slate-100 pt-6">
+                    <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-6">Notification Content</h4>
+                </div>
+
+                <div>
                     <label for="title" class="block text-sm font-bold text-slate-700 mb-2">Notification Title</label>
                     <input type="text" name="title" id="title" value="{{ old('title') }}" required
                            class="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm @error('title') border-rose-300 bg-rose-50 @enderror"
@@ -48,8 +64,8 @@
                     
                     <div class="flex flex-col items-center justify-center h-full min-h-[160px] bg-slate-50 rounded-2xl border border-slate-200 p-4">
                         <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Live Preview</p>
-                        <img id="notificationPreview" class="hidden max-h-32 rounded-lg shadow-md border border-white" alt="Notification image preview">
-                        <div id="previewPlaceholder" class="flex flex-col items-center text-slate-300">
+                        <img id="notificationPreview" class="{{ $notification->image ? '' : 'hidden' }} max-h-32 rounded-lg shadow-md border border-white" src="{{ $notification->image_url ?? '' }}" alt="Notification image preview">
+                        <div id="previewPlaceholder" class="{{ $notification->image ? 'hidden' : '' }} flex flex-col items-center text-slate-300">
                             <i data-lucide="eye-off" class="w-8 h-8 mb-2"></i>
                             <span class="text-[10px] font-bold">No image selected</span>
                         </div>
@@ -84,11 +100,12 @@ $(function() {
     $('#image_file').on('change', function() {
         if (this.files && this.files[0]) {
             $('#previewPlaceholder').addClass('hidden');
+            $('#notificationPreview').removeClass('hidden');
         } else {
             $('#previewPlaceholder').removeClass('hidden');
+            $('#notificationPreview').addClass('hidden');
         }
     });
 });
 </script>
 @endpush
-

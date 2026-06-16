@@ -11,11 +11,8 @@ class OneSignalNotificationService
     /**
      * @throws ConnectionException
      */
-    public function sendToAll(string $title, string $description, ?string $imageUrl = null): array
+    public function sendToAll(string $title, string $description, string $appId, string $apiKey, ?string $imageUrl = null): array
     {
-        $appId = config('services.onesignal.app_id');
-        $apiKey = config('services.onesignal.rest_api_key');
-
         if (! $appId || ! $apiKey) {
             throw new RuntimeException('OneSignal credentials are not configured.');
         }

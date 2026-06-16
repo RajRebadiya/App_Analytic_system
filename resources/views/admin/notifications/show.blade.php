@@ -24,6 +24,11 @@
                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Description Body</span>
                     <p class="text-slate-600 font-medium leading-relaxed">{{ $notification->description }}</p>
                 </div>
+                <div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Application</span>
+                    <div class="text-sm font-bold text-slate-900">{{ $notification->app?->name }}</div>
+                    <div class="text-[10px] text-slate-500 font-mono">{{ $notification->app?->package_name }}</div>
+                </div>
                 <div class="flex flex-wrap gap-8 pt-4 border-t border-slate-100">
                     <div>
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Delivery Status</span>
@@ -56,7 +61,7 @@
                     <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Visual Assets</h3>
                 </div>
                 <div class="p-6">
-                    <img class="w-full h-auto rounded-xl border border-slate-200 shadow-sm" src="{{ str_starts_with($notification->image, 'http') ? $notification->image : asset('storage/'.$notification->image) }}" alt="">
+                    <img class="w-full h-auto rounded-xl border border-slate-200 shadow-sm" src="{{ $notification->image_url }}" alt="">
                 </div>
             </div>
         @endif
@@ -87,4 +92,3 @@
     </div>
 </div>
 @endsection
-

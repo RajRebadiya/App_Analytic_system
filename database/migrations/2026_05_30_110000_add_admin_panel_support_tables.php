@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('method', 10);
             $table->string('path');
+            $table->string('action')->nullable()->index();
             $table->unsignedSmallInteger('status_code')->nullable()->index();
             $table->unsignedInteger('response_time_ms')->nullable();
             $table->string('ip_address', 45)->nullable();

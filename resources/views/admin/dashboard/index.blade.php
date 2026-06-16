@@ -20,11 +20,11 @@
         </div>
         <div>
             <label class="block text-sm font-semibold text-slate-700 mb-2">From Date</label>
-            <input name="from" type="date" value="{{ $filters['from'] ?? '' }}" class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm">
+            <input name="from" type="text" data-flatpickr-date value="{{ $filters['from'] ?? '' }}" placeholder="Start Date" class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm" autocomplete="off">
         </div>
         <div>
             <label class="block text-sm font-semibold text-slate-700 mb-2">To Date</label>
-            <input name="to" type="date" value="{{ $filters['to'] ?? '' }}" class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm">
+            <input name="to" type="text" data-flatpickr-date value="{{ $filters['to'] ?? '' }}" placeholder="End Date" class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm" autocomplete="off">
         </div>
         <div>
             <button type="submit" class="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg shadow-indigo-200 transition-all duration-200">
@@ -44,8 +44,7 @@
             ['Today Installs', number_format($cards['today_installations']), 'trending-up', 'text-emerald-600', 'bg-emerald-100'],
             ['Daily Active', number_format($cards['daily_active_users']), 'users', 'text-violet-600', 'bg-violet-100'],
             ['Monthly Active', number_format($cards['monthly_active_users']), 'calendar', 'text-amber-600', 'bg-amber-100'],
-            ['Notifications', number_format($cards['total_notifications_sent']), 'bell', 'text-rose-600', 'bg-rose-100'],
-            ['Success Rate', $cards['notification_success_rate'].'%', 'check-circle-2', 'text-cyan-600', 'bg-cyan-100'],
+            ['Notifications', number_format($cards['total_notifications']), 'bell', 'text-rose-600', 'bg-rose-100'],
             ['Active Ads', $cards['active_advertisements'], 'layout', 'text-slate-600', 'bg-slate-100'],
         ];
     @endphp
@@ -66,20 +65,14 @@
 </div>
 
 <!-- Charts Row 1 -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+<div class="grid grid-cols-1 gap-8 mb-8">
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-bold text-slate-900">Installation Trend</h3>
             <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full">Last 30 Days</span>
         </div>
         <div class="relative h-[300px]">
             <canvas id="installChart"></canvas>
-        </div>
-    </div>
-    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-        <h3 class="text-lg font-bold text-slate-900 mb-6">Event Distribution</h3>
-        <div class="relative h-[300px] flex items-center justify-center">
-            <canvas id="eventChart"></canvas>
         </div>
     </div>
 </div>
@@ -191,36 +184,6 @@ $(function() {
 
     makeLine('installChart', @json($charts['installLabels']), @json($charts['installData']), 'Installs', '#4f46e5');
     makeLine('activityChart', @json($charts['activityLabels']), @json($charts['activityData']), 'Active Users', '#10b981');
-
-    new Chart(document.getElementById('eventChart'), {
-        type: 'doughnut',
-        data: {
-            labels: @json($charts['eventLabels']),
-            datasets: [{
-                data: @json($charts['eventData']),
-                backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'],
-                borderWidth: 4,
-                borderColor: '#fff',
-                hoverOffset: 15
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '70%',
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        usePointStyle: true,
-                        padding: 20,
-                        font: { size: 12, weight: '600' }
-                    }
-                }
-            }
-        }
-    });
 });
 </script>
 @endpush
-

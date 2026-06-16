@@ -10,10 +10,22 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\NotificationController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('media/{path}', function (string $path): Response {
+    $path = ltrim(str_replace('\\', '/', $path), '/');
+
+    if (! Storage::disk('public')->exists($path)) {
+        abort(404);
+    }
+
+    return response()->file(Storage::disk('public')->path($path));
+})->where('path', '.*')->name('media.files');
 
 Route::get('login', [AuthController::class, 'login'])->middleware('guest')->name('login');
 

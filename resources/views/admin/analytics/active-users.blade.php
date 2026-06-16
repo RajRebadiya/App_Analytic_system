@@ -14,9 +14,9 @@
         </div>
     </div>
     <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-        <h3 class="text-lg font-bold text-slate-900 mb-6">Users by App Version</h3>
+        <h3 class="text-lg font-bold text-slate-900 mb-6">Active Users by App</h3>
         <div class="relative h-[300px]">
-            <canvas id="versionChart"></canvas>
+            <canvas id="appChart"></canvas>
         </div>
     </div>
 </div>
@@ -31,12 +31,11 @@
                 <tr>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Application</th>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Active User Count</th>
-                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Share</th>
-                    <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Growth</th>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Install Count</th>
+                    <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Last Active</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-slate-200">
-                @php $totalActive = $byApp->sum('total'); @endphp
                 @foreach($byApp as $row)
                     <tr class="hover:bg-slate-50/50 transition-colors duration-200 group">
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -51,14 +50,11 @@
                             <div class="text-sm font-bold text-slate-700">{{ number_format($row->total) }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="w-full bg-slate-100 rounded-full h-1.5 max-w-[100px]">
-                                <div class="bg-indigo-600 h-1.5 rounded-full" style="width: {{ $totalActive > 0 ? ($row->total / $totalActive) * 100 : 0 }}%"></div>
-                            </div>
+                            <div class="text-sm font-bold text-slate-700">{{ number_format($row->install_count ?? 0) }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right">
-                            <span class="inline-flex items-center text-xs font-bold text-emerald-600">
-                                <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i>
-                                Stable
+                            <span class="text-xs font-semibold text-slate-500">
+                                {{ $row->last_active_at ? \Illuminate\Support\Carbon::parse($row->last_active_at)->diffForHumans() : 'N/A' }}
                             </span>
                         </td>
                     </tr>
@@ -107,14 +103,14 @@ $(function() {
         }
     });
 
-    new Chart(document.getElementById('versionChart'), {
+    new Chart(document.getElementById('appChart'), {
         type: 'bar',
         data: {
-            labels: @json($byVersion->pluck('app_version')),
+            labels: @json($byApp->pluck('name')),
             datasets: [{
-                label: 'Users',
-                data: @json($byVersion->pluck('total')),
-                backgroundColor: '#8b5cf6',
+                label: 'Active Users',
+                data: @json($byApp->pluck('total')),
+                backgroundColor: '#4f46e5',
                 borderRadius: 6
             }]
         },
@@ -132,4 +128,3 @@ $(function() {
 });
 </script>
 @endpush
-

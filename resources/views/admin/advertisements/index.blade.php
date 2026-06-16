@@ -15,7 +15,7 @@
         <tbody>
         @foreach($advertisements as $ad)
             <tr>
-                <td>@if($ad->image)<img class="preview-img" src="{{ str_starts_with($ad->image, 'http') ? $ad->image : asset('storage/'.$ad->image) }}">@endif</td>
+                <td>@if($ad->image)<img class="preview-img" src="{{ $ad->image_url }}">@endif</td>
                 <td><strong>{{ $ad->title }}</strong><div class="text-muted small">{{ $ad->description }}</div></td>
                 <td>{{ $ad->app?->name }}</td>
                 <td><span class="badge badge-soft">{{ $ad->redirect_type }}</span> {{ $ad->redirect_value }}</td>

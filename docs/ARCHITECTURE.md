@@ -16,8 +16,9 @@ Core layers:
 ## 2. Database schema
 
 Tables:
-- `apps`: one row per managed Android app with `app_id`, `package_name`, `api_key`, version flags, maintenance flag, and status.
+- `apps`: one row per managed Android app with version fields, OneSignal credentials, maintenance flag, and status.
 - `app_installations`: one row per app/device pair, unique on `app_id + device_id`, indexed for DAU/MAU.
+- `app_install_events`: one row per install or reinstall event, used for total install counts and install trend charts.
 - `device_tokens`: current FCM token per app/device pair, supports refresh, logout, and uninstall by toggling `is_active`.
 - `advertisements`: app-specific dynamic ads with redirect type `url`, `screen`, `category`, or `product`.
 - `notifications`: notification campaign history.
@@ -89,7 +90,7 @@ Server errors return:
 - `AppManagementService`: installation deduplication, heartbeat, token refresh, version management, and event storage.
 - `NotificationService`: chunks active tokens and dispatches queue jobs.
 - `FirebaseCloudMessagingService`: sends FCM HTTP v1 requests using a Google service account.
-- `AnalyticsService`: total installs, daily installs, DAU, MAU, ad clicks, event counts, and notification success rate.
+- `AnalyticsService`: install-event totals, daily installs, DAU, MAU, ad clicks, event counts, and notification success rate.
 
 ## 8. Repository layer
 
@@ -216,10 +217,10 @@ Modules:
 - Installation analytics: install tables, device/version breakdowns, charts, filters, and export.
 - Active users: DAU/MAU trend charts, app breakdown, and version usage.
 - Advertisements: CRUD, scheduling, priority, redirect type, image upload/preview, and app filter.
-- Notifications: create/edit/delete, image upload, redirect payloads, queue-based send, history, and logs.
+- Notifications: app selection, OneSignal app credentials, image upload, redirect payloads, queue-based send, history, and logs.
 - Versions: latest/minimum version control, force update, maintenance, APK URL, popup message, and change logs.
 - Events: app opens, screen views, notification opens, ad clicks, button clicks, filters, and charts.
-- API logs: method, path, status, latency, app id, IP address, search, and filtering.
+- API logs: method, path, action, status, latency, app id, IP address, search, and filtering.
 
 Admin structure:
 - Controllers: `app/Http/Controllers/Admin`
@@ -227,7 +228,7 @@ Admin structure:
 - Repositories: `app/Repositories/Admin`
 - Views: `resources/views/admin`
 - Layout: `resources/views/admin/layouts/app.blade.php`
-- API monitoring middleware: `app/Http/Middleware/LogApiRequest.php`
+- API monitoring middleware: `app/Http/Middleware/LogApiRequest.php` logs method, path, action, status, latency, app id, IP address, and payloads
 - Admin role middleware: `app/Http/Middleware/EnsureAdmin.php`
 
 Security:

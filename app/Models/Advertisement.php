@@ -22,4 +22,21 @@ class Advertisement extends Model
     {
         return $this->belongsTo(AndroidApp::class, 'app_id');
     }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if (! $this->image) {
+            return null;
+        }
+
+        $image = str_replace('\\', '/', $this->image);
+        $image = ltrim($image, '/');
+        $image = preg_replace('#^(storage/|public/)#', '', $image) ?? $image;
+
+        if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
+            return $image;
+        }
+
+        return route('media.files', ['path' => $image]);
+    }
 }

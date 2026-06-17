@@ -106,6 +106,14 @@ class AdNetworkSettingController extends Controller
 
         $payload['app_id'] = $this->appDatabaseId($request);
 
+        // Process others: filter out entries with empty keys
+        $others = $request->input('others', []);
+        $payload['others'] = collect($others)
+            ->filter(fn($pair) => !empty($pair['key']))
+            ->values()
+            ->map(fn($pair) => ['key' => trim($pair['key']), 'value' => $pair['value'] ?? ''])
+            ->toArray();
+
         return $payload;
     }
 

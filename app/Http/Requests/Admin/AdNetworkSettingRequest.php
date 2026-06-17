@@ -92,6 +92,9 @@ class AdNetworkSettingRequest extends FormRequest
             'privacy_policy_url' => ['nullable', 'url', 'max:2048'],
             'privacy_url' => ['nullable', 'url', 'max:2048'],
             'more_app_url' => ['nullable', 'url', 'max:2048'],
+            'others' => ['nullable', 'array'],
+            'others.*.key' => ['nullable', 'string', 'max:255'],
+            'others.*.value' => ['nullable', 'string', 'max:1000'],
         ];
     }
 }

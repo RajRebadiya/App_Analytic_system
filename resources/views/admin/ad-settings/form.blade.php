@@ -281,8 +281,161 @@
                     </div>
                 @endforeach
             </div>
+
+            {{-- Others: Custom Key-Value Pairs --}}
+            <div class="pt-8 border-t border-slate-100" id="others-section">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-violet-50 rounded-xl text-violet-600 border border-violet-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900">Others</h4>
+                            <p class="text-[10px] text-slate-400 font-medium mt-0.5">Custom key-value pairs sent in ad-config API response</p>
+                        </div>
+                    </div>
+                    <button type="button" id="add-other-row"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold rounded-xl transition-all duration-200 shadow-sm shadow-violet-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                        Add Field
+                    </button>
+                </div>
+
+                <div id="others-rows" class="space-y-3">
+                    {{-- Existing rows from saved data --}}
+                    @php $othersData = old('others', $setting->others ?? []); @endphp
+                    @if(!empty($othersData))
+                        @foreach($othersData as $i => $pair)
+                            <div class="others-row flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl group" data-index="{{ $i }}">
+                                <div class="flex-1 grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Key</label>
+                                        <input type="text" name="others[{{ $i }}][key]" value="{{ $pair['key'] ?? '' }}"
+                                               placeholder="e.g. custom_key"
+                                               class="block w-full px-3 py-2 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200 text-sm font-medium">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Value</label>
+                                        <input type="text" name="others[{{ $i }}][value]" value="{{ $pair['value'] ?? '' }}"
+                                               placeholder="e.g. custom_value"
+                                               class="block w-full px-3 py-2 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200 text-sm font-medium">
+                                    </div>
+                                </div>
+                                <button type="button"
+                                    class="remove-other-row flex-shrink-0 p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                                </button>
+                            </div>
+                        @endforeach
+                    @else
+                        {{-- Empty state shown when no rows --}}
+                        <div id="others-empty-state" class="flex flex-col items-center justify-center py-8 text-center border-2 border-dashed border-slate-200 rounded-xl">
+                            <div class="p-3 bg-slate-100 rounded-full mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                            </div>
+                            <p class="text-sm font-bold text-slate-400">No custom fields yet</p>
+                            <p class="text-xs text-slate-300 mt-1">Click "Add Field" to add custom key-value pairs</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
+
+    {{-- Others row template (hidden) --}}
+    <template id="other-row-template">
+        <div class="others-row flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl group">
+            <div class="flex-1 grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Key</label>
+                    <input type="text" name="others[__INDEX__][key]" value=""
+                           placeholder="e.g. custom_key"
+                           class="block w-full px-3 py-2 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200 text-sm font-medium">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Value</label>
+                    <input type="text" name="others[__INDEX__][value]" value=""
+                           placeholder="e.g. custom_value"
+                           class="block w-full px-3 py-2 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200 text-sm font-medium">
+                </div>
+            </div>
+            <button type="button"
+                class="remove-other-row flex-shrink-0 p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </template>
+
+    <script>
+    (function() {
+        let rowIndex = {{ count($othersData ?? []) }};
+        const container = document.getElementById('others-rows');
+        const template = document.getElementById('other-row-template');
+        const addBtn = document.getElementById('add-other-row');
+        const emptyState = document.getElementById('others-empty-state');
+
+        function removeEmptyState() {
+            if (emptyState && emptyState.parentNode) {
+                emptyState.remove();
+            }
+        }
+
+        function showEmptyStateIfNeeded() {
+            if (container.querySelectorAll('.others-row').length === 0) {
+                const empty = document.createElement('div');
+                empty.id = 'others-empty-state';
+                empty.className = 'flex flex-col items-center justify-center py-8 text-center border-2 border-dashed border-slate-200 rounded-xl';
+                empty.innerHTML = `
+                    <div class="p-3 bg-slate-100 rounded-full mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                    </div>
+                    <p class="text-sm font-bold text-slate-400">No custom fields yet</p>
+                    <p class="text-xs text-slate-300 mt-1">Click "Add Field" to add custom key-value pairs</p>`;
+                container.appendChild(empty);
+            }
+        }
+
+        addBtn.addEventListener('click', function() {
+            removeEmptyState();
+            const clone = template.content.cloneNode(true);
+            // Replace __INDEX__ with current rowIndex
+            clone.querySelectorAll('input').forEach(function(input) {
+                input.name = input.name.replace('__INDEX__', rowIndex);
+            });
+            const row = clone.querySelector('.others-row');
+            // Animate in
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(-8px)';
+            container.appendChild(clone);
+            const addedRow = container.querySelector('.others-row:last-child');
+            requestAnimationFrame(function() {
+                addedRow.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+                addedRow.style.opacity = '1';
+                addedRow.style.transform = 'translateY(0)';
+            });
+            addedRow.querySelector('input').focus();
+            rowIndex++;
+            bindRemove(addedRow);
+        });
+
+        function bindRemove(row) {
+            row.querySelector('.remove-other-row').addEventListener('click', function() {
+                row.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(-4px)';
+                setTimeout(function() {
+                    row.remove();
+                    showEmptyStateIfNeeded();
+                }, 150);
+            });
+        }
+
+        // Bind remove to existing rows
+        container.querySelectorAll('.others-row').forEach(function(row) {
+            bindRemove(row);
+        });
+    })();
+    </script>
 
     <!-- Form Actions -->
     <div class="fixed bottom-8 left-1/2 -translate-x-1/2 md:left-auto md:right-8 md:translate-x-0 z-40">

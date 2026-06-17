@@ -44,6 +44,7 @@
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">AdMob App ID</th>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Status Indicators</th>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Rules</th>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Others</th>
                     <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
                 </tr>
             </thead>
@@ -73,6 +74,24 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-xs font-bold text-slate-700 mb-1">{{ $setting->ad_platform_sequence }}</div>
                             <div class="text-[10px] text-slate-400">Click: {{ $setting->main_click_count }} / {{ $setting->inner_click_count }}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            @php $others = $setting->others ?? []; @endphp
+                            @if(!empty($others))
+                                <div class="flex flex-wrap gap-1">
+                                    @foreach($others as $pair)
+                                        @if(!empty($pair['key']))
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-violet-50 text-violet-700 border border-violet-100" title="{{ $pair['value'] ?? '' }}">
+                                                <span class="text-violet-400">{{ $pair['key'] }}</span>
+                                                <span class="text-slate-400">:</span>
+                                                <span class="text-violet-600 max-w-[80px] truncate">{{ $pair['value'] ?? '—' }}</span>
+                                            </span>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @else
+                                <span class="text-[10px] text-slate-300 font-medium">—</span>
+                            @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">

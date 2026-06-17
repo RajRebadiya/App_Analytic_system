@@ -64,6 +64,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'version_codes',
     'privacy_policy_url',
     'more_app_url',
+    'others',
 ])]
 class AdNetworkSetting extends Model
 {
@@ -81,6 +82,7 @@ class AdNetworkSetting extends Model
             'need_internet' => 'boolean',
             'redirect_other_app_status' => 'boolean',
             'update_dialog_status' => 'boolean',
+            'others' => 'array',
         ];
     }
 
@@ -91,7 +93,7 @@ class AdNetworkSetting extends Model
 
     public function toAndroidPayload(): array
     {
-        return [
+        $payload = [
             'app_name' => $this->app?->name ?? '',
             'app_db_id' => $this->app_id,
             'app_package_name' => $this->app?->package_name ?? '',
@@ -138,6 +140,17 @@ class AdNetworkSetting extends Model
             'Popup' => $this->popup_status ?? 'off',
             'Main_click' => $this->main_click_status ?? 'on',
         ];
+
+        // Merge custom others key-value pairs into payload
+        if (!empty($this->others) && is_array($this->others)) {
+            foreach ($this->others as $pair) {
+                if (!empty($pair['key'])) {
+                    $payload[$pair['key']] = $pair['value'] ?? '';
+                }
+            }
+        }
+
+        return $payload;
     }
 
     public static function normalizePayload(array $data): array

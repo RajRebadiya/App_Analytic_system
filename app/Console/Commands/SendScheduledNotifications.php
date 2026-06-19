@@ -51,6 +51,27 @@ class SendScheduledNotifications extends Command
                     'error' => $e->getMessage()
                 ]);
             }
+
+            // Reschedule if frequency is set to everyday
+            if (($notification->schedule_frequency ?? 'once') === 'everyday') {
+                try {
+                    $nextNotification = $notification->replicate();
+                    $nextNotification->scheduled_at = $notification->scheduled_at->copy()->addDay();
+                    $nextNotification->status = 'pending';
+                    $nextNotification->onesignal_response = null;
+                    $nextNotification->total_sent = 0;
+                    $nextNotification->total_failed = 0;
+                    $nextNotification->save();
+
+                    $this->info("Rescheduled daily notification ID: {$notification->id} as next instance ID: {$nextNotification->id} for {$nextNotification->scheduled_at->toDateTimeString()}");
+                } catch (\Exception $e) {
+                    $this->error("Failed to reschedule daily notification for ID: {$notification->id}. Error: {$e->getMessage()}");
+                    Log::error('Failed to reschedule daily notification', [
+                        'notification_id' => $notification->id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
         }
 
         return Command::SUCCESS;

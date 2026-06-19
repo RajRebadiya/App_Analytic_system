@@ -41,6 +41,21 @@
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Created At</span>
                         <div class="text-xs font-bold text-slate-700">{{ $notification->created_at?->format('d M Y, h:i A') }}</div>
                     </div>
+                    @if($notification->scheduled_at)
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Scheduled For</span>
+                            <div class="text-xs font-bold text-indigo-600 flex items-center">
+                                <i data-lucide="calendar-clock" class="w-3.5 h-3.5 mr-1.5"></i>
+                                {{ $notification->scheduled_at->format('d M Y, h:i A') }}
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Schedule Frequency</span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold {{ $notification->schedule_frequency === 'everyday' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700' }}">
+                                {{ $notification->schedule_frequency === 'everyday' ? 'Everyday (Repeat daily)' : 'Once (One-time)' }}
+                            </span>
+                        </div>
+                    @endif
                 </div>
             </div>
             

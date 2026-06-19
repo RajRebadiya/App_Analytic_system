@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['app_id', 'title', 'description', 'image', 'onesignal_response', 'status', 'notification_type', 'send_to', 'redirect_screen', 'redirect_data', 'total_sent', 'total_failed', 'created_by', 'scheduled_at'])]
+#[Fillable(['app_id', 'title', 'description', 'image', 'onesignal_response', 'status', 'notification_type', 'send_to', 'redirect_screen', 'redirect_data', 'total_sent', 'total_failed', 'created_by', 'scheduled_at', 'schedule_frequency'])]
 class PushNotification extends Model
 {
     protected $table = 'notifications';

@@ -81,6 +81,16 @@
                     @error('scheduled_at')<p class="mt-1 text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
                     <p class="mt-2 text-xs text-slate-500 font-medium">Leave this blank to send the notification immediately. Otherwise, it will be sent automatically at the specified time.</p>
                 </div>
+                
+                <div id="frequency_container" class="mt-4" style="display: none;">
+                    <label for="schedule_frequency" class="block text-sm font-bold text-slate-700 mb-2">Schedule Frequency</label>
+                    <select name="schedule_frequency" id="schedule_frequency" class="block w-full max-w-md px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm @error('schedule_frequency') border-rose-300 bg-rose-50 @enderror">
+                        <option value="once" @selected(old('schedule_frequency', $notification->schedule_frequency ?? 'once') == 'once')>Once (One-time)</option>
+                        <option value="everyday" @selected(old('schedule_frequency', $notification->schedule_frequency ?? 'once') == 'everyday')>Everyday (Repeat daily)</option>
+                    </select>
+                    @error('schedule_frequency')<p class="mt-1 text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
+                    <p class="mt-2 text-xs text-slate-500 font-medium">Choose whether this notification should be sent once or repeat daily at the same time.</p>
+                </div>
             </div>
 
             <div class="px-6 py-4 bg-emerald-50/50 border-t border-emerald-100 flex items-center gap-3">
@@ -121,9 +131,11 @@ $(function() {
         if ($(this).val()) {
             $('#submitBtnText').text('Schedule Notification');
             $('#submitBtnIcon').attr('data-lucide', 'calendar-clock');
+            $('#frequency_container').slideDown(200);
         } else {
             $('#submitBtnText').text('Send Notification Now');
             $('#submitBtnIcon').attr('data-lucide', 'send');
+            $('#frequency_container').slideUp(200);
         }
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();

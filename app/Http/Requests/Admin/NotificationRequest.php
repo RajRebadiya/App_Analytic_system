@@ -26,6 +26,7 @@ class NotificationRequest extends FormRequest
             'notification_type' => ['nullable', 'string', 'max:32'],
             'send_to' => ['nullable', Rule::in(['all', 'active'])],
             'scheduled_at' => ['nullable', 'date'],
+            'schedule_frequency' => ['nullable', Rule::in(['once', 'everyday'])],
         ];
     }
 }

@@ -55,10 +55,22 @@
                                     <i data-lucide="calendar-clock" class="w-3.5 h-3.5 mr-1.5"></i>
                                     {{ $notification->scheduled_at->format('d M Y, h:i A') }}
                                 </div>
+                                @if(($notification->schedule_frequency ?? 'once') === 'everyday')
+                                    <div class="mt-1 text-[10px] font-bold text-emerald-600 flex items-center gap-1" title="This is a recurring daily notification">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                        Everyday
+                                    </div>
+                                @endif
                             @else
                                 <div class="text-xs font-medium text-slate-500" title="Created on">
                                     {{ $notification->created_at?->format('d M Y, h:i A') }}
                                 </div>
+                                @if($notification->scheduled_at && ($notification->schedule_frequency ?? 'once') === 'everyday')
+                                    <div class="mt-1 text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                                        Everyday (Sent)
+                                    </div>
+                                @endif
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

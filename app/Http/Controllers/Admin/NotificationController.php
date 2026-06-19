@@ -61,6 +61,10 @@ class NotificationController extends Controller
         unset($data['image_file'], $data['send_now']);
         $notification = PushNotification::query()->create($data);
 
+        if (! empty($data['scheduled_at'])) {
+            return redirect()->route('admin.notifications.show', $notification)->with('status', 'Notification scheduled successfully.');
+        }
+
         $result = $this->notifications->send($notification);
 
         if (! $result['successful']) {

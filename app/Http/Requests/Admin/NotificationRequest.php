@@ -25,6 +25,7 @@ class NotificationRequest extends FormRequest
             'send_now' => ['sometimes', 'boolean'],
             'notification_type' => ['nullable', 'string', 'max:32'],
             'send_to' => ['nullable', Rule::in(['all', 'active'])],
+            'scheduled_at' => ['nullable', 'date'],
         ];
     }
 }

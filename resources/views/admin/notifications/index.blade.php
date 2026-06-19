@@ -49,8 +49,17 @@
                                 {{ ucfirst($notification->status ?? 'pending') }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-slate-500">
-                            {{ $notification->created_at?->format('d M, h:i A') }}
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if($notification->scheduled_at && $notification->status === 'pending')
+                                <div class="text-xs font-bold text-indigo-600 flex items-center" title="Scheduled to send at this time">
+                                    <i data-lucide="calendar-clock" class="w-3.5 h-3.5 mr-1.5"></i>
+                                    {{ $notification->scheduled_at->format('d M Y, h:i A') }}
+                                </div>
+                            @else
+                                <div class="text-xs font-medium text-slate-500" title="Created on">
+                                    {{ $notification->created_at?->format('d M Y, h:i A') }}
+                                </div>
+                            @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">

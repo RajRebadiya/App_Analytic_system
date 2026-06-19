@@ -72,7 +72,17 @@
                     </div>
                 </div>
             </div>
-            
+            <div class="border-t border-slate-100 p-6 space-y-6 bg-slate-50/30">
+                <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Schedule Notification (Optional)</h4>
+                <div>
+                    <label for="scheduled_at" class="block text-sm font-bold text-slate-700 mb-2">Schedule Time</label>
+                    <input type="datetime-local" name="scheduled_at" id="scheduled_at" value="{{ old('scheduled_at', $notification->scheduled_at?->format('Y-m-d\TH:i')) }}"
+                           class="block w-full max-w-md px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm @error('scheduled_at') border-rose-300 bg-rose-50 @enderror">
+                    @error('scheduled_at')<p class="mt-1 text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
+                    <p class="mt-2 text-xs text-slate-500 font-medium">Leave this blank to send the notification immediately. Otherwise, it will be sent automatically at the specified time.</p>
+                </div>
+            </div>
+
             <div class="px-6 py-4 bg-emerald-50/50 border-t border-emerald-100 flex items-center gap-3">
                 <div class="p-1.5 bg-emerald-500 rounded-lg text-white shadow-lg shadow-emerald-500/20">
                     <i data-lucide="globe" class="w-4 h-4"></i>
@@ -86,8 +96,8 @@
                 Discard Draft
             </a>
             <button type="submit" class="inline-flex items-center px-8 py-3 border border-transparent shadow-lg shadow-indigo-200 text-sm font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 group">
-                <i data-lucide="send" class="w-4 h-4 mr-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
-                Send Notification Now
+                <i id="submitBtnIcon" data-lucide="send" class="w-4 h-4 mr-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                <span id="submitBtnText">Send Notification Now</span>
             </button>
         </div>
     </form>
@@ -106,6 +116,19 @@ $(function() {
             $('#notificationPreview').addClass('hidden');
         }
     });
+
+    $('#scheduled_at').on('input change', function() {
+        if ($(this).val()) {
+            $('#submitBtnText').text('Schedule Notification');
+            $('#submitBtnIcon').attr('data-lucide', 'calendar-clock');
+        } else {
+            $('#submitBtnText').text('Send Notification Now');
+            $('#submitBtnIcon').attr('data-lucide', 'send');
+        }
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }).trigger('change');
 });
 </script>
 @endpush

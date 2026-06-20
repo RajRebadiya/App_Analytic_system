@@ -1,9 +1,12 @@
-@extends('admin.layouts.app', ['title' => 'Create Notification', 'heading' => 'Compose Notification', 'subtitle' => 'Draft a new push notification and send it immediately to all subscribed users.'])
+@extends('admin.layouts.app', ['title' => $notification->exists ? 'Edit Notification' : 'Create Notification', 'heading' => $notification->exists ? 'Edit Notification' : 'Compose Notification', 'subtitle' => $notification->exists ? 'Update your notification details.' : 'Draft a new push notification and send it immediately to all subscribed users.'])
 
 @section('content')
 <div class="max-w-4xl">
-    <form action="{{ route('admin.notifications.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+    <form action="{{ $notification->exists ? route('admin.notifications.update', $notification) : route('admin.notifications.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
         @csrf
+        @if($notification->exists)
+            @method('PUT')
+        @endif
         
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div class="p-6 border-b border-slate-100 bg-slate-50/50">
@@ -29,7 +32,7 @@
 
                 <div>
                     <label for="title" class="block text-sm font-bold text-slate-700 mb-2">Notification Title</label>
-                    <input type="text" name="title" id="title" value="{{ old('title') }}" required
+                    <input type="text" name="title" id="title" value="{{ old('title', $notification->title) }}" required
                            class="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm @error('title') border-rose-300 bg-rose-50 @enderror"
                            placeholder="e.g. New Update Available!">
                     @error('title')<p class="mt-1 text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
@@ -39,7 +42,7 @@
                     <label for="description" class="block text-sm font-bold text-slate-700 mb-2">Message Description</label>
                     <textarea name="description" id="description" rows="4" required
                               class="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm @error('description') border-rose-300 bg-rose-50 @enderror"
-                              placeholder="Describe the purpose of this notification in detail...">{{ old('description') }}</textarea>
+                              placeholder="Describe the purpose of this notification in detail...">{{ old('description', $notification->description) }}</textarea>
                     @error('description')<p class="mt-1 text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
                 </div>
 
@@ -103,11 +106,11 @@
 
         <div class="flex items-center justify-end gap-4">
             <a href="{{ route('admin.notifications.index') }}" class="px-6 py-3 text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
-                Discard Draft
+                {{ $notification->exists ? 'Cancel' : 'Discard Draft' }}
             </a>
             <button type="submit" class="inline-flex items-center px-8 py-3 border border-transparent shadow-lg shadow-indigo-200 text-sm font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 group">
-                <i id="submitBtnIcon" data-lucide="send" class="w-4 h-4 mr-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
-                <span id="submitBtnText">Send Notification Now</span>
+                <i id="submitBtnIcon" data-lucide="{{ $notification->exists ? 'save' : 'send' }}" class="w-4 h-4 mr-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                <span id="submitBtnText">{{ $notification->exists ? 'Save Changes' : 'Send Notification Now' }}</span>
             </button>
         </div>
     </form>

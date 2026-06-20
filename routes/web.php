@@ -55,7 +55,8 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
 
         Route::resource('advertisements', AdvertisementController::class)->except(['show']);
         Route::resource('ad-settings', AdNetworkSettingController::class)->except(['show'])->parameters(['ad-settings' => 'adSetting']);
-        Route::resource('notifications', NotificationController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
+        Route::patch('notifications/{notification}/toggle-active', [NotificationController::class, 'toggleActive'])->name('notifications.toggle-active');
+        Route::resource('notifications', NotificationController::class);
         Route::post('notifications/{notification}/send', [NotificationController::class, 'send'])->name('notifications.send');
         Route::get('notifications/{notification}/logs', [NotificationController::class, 'logs'])->name('notifications.logs');
         Route::resource('versions', AppVersionController::class)->except(['show']);

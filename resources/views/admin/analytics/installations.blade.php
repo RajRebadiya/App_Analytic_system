@@ -28,6 +28,16 @@
     </div>
 </div>
 
+<div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-bold text-slate-900">Geographic Distribution</h3>
+        <span class="text-xs font-semibold px-2.5 py-1 bg-indigo-100 text-indigo-700 rounded-full">All Countries</span>
+    </div>
+    <div class="relative w-full h-[400px] flex items-center justify-center overflow-hidden" id="regions_div">
+        <div class="text-slate-400 text-sm">Loading map data...</div>
+    </div>
+</div>
+
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-slate-200">
@@ -81,8 +91,52 @@
 @endsection
 
 @push('scripts')
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
 $(function() {
+    // Google GeoChart for Geographic Distribution
+    google.charts.load('current', {
+        'packages':['geochart'],
+    });
+    google.charts.setOnLoadCallback(drawRegionsMap);
+
+    function drawRegionsMap() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Country');
+        data.addColumn('number', 'Installs');
+
+        var regionNames = null;
+        try {
+            regionNames = new Intl.DisplayNames(['en'], {type: 'region'});
+        } catch (e) {}
+
+        function getCountryDisplay(code) {
+            if (regionNames && code) {
+                try {
+                    return regionNames.of(code) + ' (' + code + ')';
+                } catch (e) {}
+            }
+            return code || 'Unknown';
+        }
+
+        data.addRows([
+            @foreach($countries as $country)
+            [{v: '{{ $country->country_code }}', f: getCountryDisplay('{{ $country->country_code }}')}, {{ $country->total }}],
+            @endforeach
+        ]);
+
+        var options = {
+            colorAxis: {colors: ['#e0e7ff', '#4f46e5']}, // Indigo 100 to Indigo 600
+            backgroundColor: 'transparent',
+            datalessRegionColor: '#f8fafc', // Slate 50
+            defaultColor: '#f1f5f9',
+            tooltip: {textStyle: {color: '#1e293b'}, showColorCode: true}
+        };
+
+        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+        chart.draw(data, options);
+    }
+
     new Chart(document.getElementById('dailyInstalls'), {
         type: 'bar',
         data: {

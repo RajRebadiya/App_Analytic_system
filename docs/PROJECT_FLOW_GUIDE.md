@@ -563,7 +563,9 @@ Dashboard shows:
 - Event trends
 - Recent API activity
 
-Admin date filters and schedule fields use Flatpickr so start/end dates are picked consistently in the UI.
+### Analytics Features
+
+The `Analytics -> Installations` page features an interactive **Geographic Distribution Map** powered by Google GeoCharts. This map displays country-wise installation counts by reading the `country_code` data sent during app installs. Hovering over a country shows its total install count.
 
 Admin can filter dashboard by:
 

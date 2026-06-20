@@ -26,7 +26,7 @@ class AnalyticsController extends Controller
             'devices' => (clone $eventQuery)->select('device_brand', DB::raw('count(*) as total'))->groupBy('device_brand')->orderByDesc('total')->limit(10)->get(),
             'androidVersions' => (clone $eventQuery)->select('android_version', DB::raw('count(*) as total'))->groupBy('android_version')->orderByDesc('total')->limit(10)->get(),
             'appVersions' => (clone $eventQuery)->select('app_version', DB::raw('count(*) as total'))->groupBy('app_version')->orderByDesc('total')->limit(10)->get(),
-            'countries' => (clone $eventQuery)->select('country_code', DB::raw('count(*) as total'))->groupBy('country_code')->orderByDesc('total')->limit(10)->get(),
+            'countries' => (clone $query)->select('country_code', DB::raw('count(*) as total'))->whereNotNull('country_code')->where('country_code', '!=', '')->groupBy('country_code')->orderByDesc('total')->get(),
         ]);
     }
 

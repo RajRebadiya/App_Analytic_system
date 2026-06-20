@@ -18,6 +18,7 @@
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Visual</th>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Scheduled</th>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Visibility</th>
                     <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
                 </tr>
             </thead>
@@ -73,6 +74,12 @@
                                 @endif
                             @endif
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <label class="relative inline-flex items-center cursor-pointer" title="Toggle visibility in Android App API">
+                                <input type="checkbox" class="sr-only peer toggle-active-btn" data-url="{{ route('admin.notifications.toggle-active', $notification) }}" {{ $notification->is_active ? 'checked' : '' }}>
+                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                            </label>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                 <a href="{{ route('admin.notifications.show', $notification) }}" 
@@ -81,6 +88,13 @@
                                     <i data-lucide="eye" class="w-4 h-4 mr-1.5"></i>
                                     View
                                 </a>
+                                <a href="{{ route('admin.notifications.edit', $notification) }}" 
+                                   class="inline-flex items-center px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors"
+                                   title="Edit Notification">
+                                    <i data-lucide="edit" class="w-4 h-4 mr-1.5"></i>
+                                    Edit
+                                </a>
+                                @if($notification->is_active)
                                 <form method="POST" action="{{ route('admin.notifications.send', $notification) }}">
                                     @csrf
                                     <button type="submit" 
@@ -90,6 +104,7 @@
                                         Resend
                                     </button>
                                 </form>
+                                @endif
                                 <form method="POST" action="{{ route('admin.notifications.destroy', $notification) }}" data-confirm="Are you sure you want to delete this notification history?">
                                     @csrf 
                                     @method('DELETE')
@@ -109,3 +124,25 @@
     @include('admin.components.pagination', ['paginator' => $notifications])
 </div>
 @endsection
+
+@push('scripts')
+<script>
+$(function() {
+    $('.toggle-active-btn').on('change', function() {
+        var $btn = $(this);
+        $.ajax({
+            url: $btn.data('url'),
+            type: 'PATCH',
+            data: { _token: '{{ csrf_token() }}' },
+            success: function(res) {
+                // Optional: show a quick toast
+            },
+            error: function() {
+                $btn.prop('checked', !$btn.prop('checked'));
+                alert('Failed to update status');
+            }
+        });
+    });
+});
+</script>
+@endpush

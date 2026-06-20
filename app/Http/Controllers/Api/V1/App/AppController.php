@@ -64,7 +64,7 @@ class AppController extends Controller
 
     public function notifications(Request $request): JsonResponse
     {
-        $notifications = $this->app($request)->notifications()->latest()->limit(50)->get();
+        $notifications = $this->app($request)->notifications()->where('is_active', true)->latest()->limit(50)->get();
 
         return $this->success('Notifications fetched', NotificationResource::collection($notifications));
     }

@@ -110,8 +110,22 @@ class NotificationController extends Controller
         return back()->with('status', 'Notification deleted.');
     }
 
+    public function toggleActive(PushNotification $notification): \Illuminate\Http\JsonResponse
+    {
+        $notification->update(['is_active' => !$notification->is_active]);
+        return response()->json([
+            'status_code' => 200,
+            'message' => 'Notification status updated.',
+            'data' => ['is_active' => $notification->is_active]
+        ]);
+    }
+
     public function send(PushNotification $notification): RedirectResponse
     {
+        if (!$notification->is_active) {
+            return back()->withErrors(['onesignal' => 'Cannot send an inactive notification. Please turn it on first.']);
+        }
+
         $result = $this->notifications->send($notification);
 
         if (! $result['successful']) {

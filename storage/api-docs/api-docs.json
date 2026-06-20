@@ -10,11 +10,11 @@
                 "tags": [
                     "Universal"
                 ],
-                "description": "Universal single API endpoint.\n\nActions available for module apps: list, create, show, update, delete, install, heartbeat, save-token/save-fcm.\n\nAdmin app CRUD examples:\n- List: {\"module\":\"apps\",\"action\":\"list\"}\n- Create: {\"module\":\"apps\",\"action\":\"create\",\"payload\":{\"name\":\"Jivanand\",\"package_name\":\"com.example.jivanand\"}}\n- Show: {\"module\":\"apps\",\"action\":\"show\",\"id\":2}\n- Update: {\"module\":\"apps\",\"action\":\"update\",\"id\":2,\"payload\":{\"name\":\"Jivanand\",\"package_name\":\"com.example.jivanand\"}}\n- Delete: {\"module\":\"apps\",\"action\":\"delete\"}\n\nApp credential: send app_package_name header or payload.app_package_name.\n\nInstall payload example: {\"module\":\"apps\",\"action\":\"install\",\"payload\":{\"app_package_name\":\"com.example.jivanand\",\"device_id\":\"device-12345\",\"device_name\":\"Pixel 8\",\"device_brand\":\"Google\",\"android_version\":\"15\",\"app_version\":\"1.0.0\"}}\n\nHeartbeat payload example: {\"module\":\"apps\",\"action\":\"heartbeat\",\"payload\":{\"app_package_name\":\"com.example.jivanand\",\"device_id\":\"device-12345\",\"app_version\":\"1.0.0\"}}\n\nSave FCM token example: {\"module\":\"apps\",\"action\":\"save-token\",\"payload\":{\"app_package_name\":\"com.example.jivanand\",\"device_id\":\"device-12345\",\"fcm_token\":\"firebase-device-token\",\"is_active\":true}}",
+                "description": "Universal single API endpoint.\n\nActions available for module apps: list, create, show, update, delete, install, heartbeat, save-token/save-fcm.\n\nAdmin app CRUD examples:\n- List: {\"module\":\"apps\",\"action\":\"list\"}\n- Create: {\"module\":\"apps\",\"action\":\"create\",\"payload\":{\"name\":\"Jivanand\",\"package_name\":\"com.example.jivanand\",\"current_version\":\"1.0.0\"}}\n- Show: {\"module\":\"apps\",\"action\":\"show\",\"id\":2}\n- Update: {\"module\":\"apps\",\"action\":\"update\",\"id\":2,\"payload\":{\"name\":\"Jivanand\",\"package_name\":\"com.example.jivanand\",\"current_version\":\"1.0.1\"}}\n- Delete: {\"module\":\"apps\",\"action\":\"delete\"}\n\nApp credential: send app_package_name header or payload.app_package_name.\n\nInstall payload example: {\"module\":\"apps\",\"action\":\"install\",\"payload\":{\"app_package_name\":\"com.example.jivanand\",\"device_id\":\"device-12345\",\"device_name\":\"Pixel 8\",\"device_brand\":\"Google\",\"android_version\":\"15\",\"country_code\":\"IN\",\"app_version\":\"1.0.0\"}}\n\nHeartbeat payload example: {\"module\":\"apps\",\"action\":\"heartbeat\",\"payload\":{\"app_package_name\":\"com.example.jivanand\",\"device_id\":\"device-12345\",\"app_version\":\"1.0.0\"}}\n\nSave FCM token example: {\"module\":\"apps\",\"action\":\"save-token\",\"payload\":{\"app_package_name\":\"com.example.jivanand\",\"device_id\":\"device-12345\",\"fcm_token\":\"firebase-device-token\",\"is_active\":true}}",
                 "operationId": "32fdd17c7a7cafddc0842897745774c5",
                 "parameters": [
                     {
-                        "name": "app_package_name",
+                        "name": "X-App-Package-Name",
                         "in": "header",
                         "description": "Optional when app_package_name is sent inside payload.",
                         "required": false,
@@ -92,7 +92,7 @@
                 "operationId": "b8732bf5584a8e344130c3d2992ade9b",
                 "parameters": [
                     {
-                        "name": "app_package_name",
+                        "name": "X-App-Package-Name",
                         "in": "header",
                         "required": true,
                         "schema": {
@@ -462,11 +462,12 @@
                         "nullable": true
                     },
                     "payload": {
-                        "description": "Action payload. create/update use name and package_name. install uses device_id, device_name, device_brand, android_version, app_version. heartbeat uses device_id and optional app_version. save-token uses device_id, fcm_token, and optional is_active.",
+                        "description": "Action payload. create/update use name, package_name, and current_version. install uses device_id, device_name, device_brand, android_version, country_code, app_version. heartbeat uses device_id and optional app_version. save-token uses device_id, fcm_token, and optional is_active.",
                         "type": "object",
                         "example": {
                             "name": "Jivanand",
-                            "package_name": "com.example.jivanand"
+                            "package_name": "com.example.jivanand",
+                            "current_version": "1.0.0"
                         }
                     }
                 },
@@ -476,7 +477,7 @@
         "securitySchemes": {
             "AppPackageName": {
                 "type": "apiKey",
-                "name": "app_package_name",
+                "name": "X-App-Package-Name",
                 "in": "header"
             }
         }

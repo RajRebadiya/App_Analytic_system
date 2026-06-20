@@ -6,7 +6,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Info(version: '1.0.0', title: 'Multi Android App Management API')]
 #[OA\Server(url: '/api/v1')]
-#[OA\SecurityScheme(securityScheme: 'AppPackageName', type: 'apiKey', in: 'header', name: 'app_package_name')]
+#[OA\SecurityScheme(securityScheme: 'AppPackageName', type: 'apiKey', in: 'header', name: 'X-App-Package-Name')]
 #[OA\Schema(schema: 'ApiSuccess', properties: [
     new OA\Property(property: 'status_code', type: 'integer', example: 200),
     new OA\Property(property: 'message', type: 'string', example: 'Success message'),
@@ -75,7 +75,7 @@ use OpenApi\Attributes as OA;
     new OA\Property(property: 'payload', type: 'object', description: 'Action payload. create/update use name, package_name, and current_version. install uses device_id, device_name, device_brand, android_version, country_code, app_version. heartbeat uses device_id and optional app_version. save-token uses device_id, fcm_token, and optional is_active.', example: ['name' => 'Jivanand', 'package_name' => 'com.example.jivanand', 'current_version' => '1.0.0']),
 ])]
 #[OA\Post(path: '/universal', description: "Universal single API endpoint.\n\nActions available for module apps: list, create, show, update, delete, install, heartbeat, save-token/save-fcm.\n\nAdmin app CRUD examples:\n- List: {\"module\":\"apps\",\"action\":\"list\"}\n- Create: {\"module\":\"apps\",\"action\":\"create\",\"payload\":{\"name\":\"Jivanand\",\"package_name\":\"com.example.jivanand\",\"current_version\":\"1.0.0\"}}\n- Show: {\"module\":\"apps\",\"action\":\"show\",\"id\":2}\n- Update: {\"module\":\"apps\",\"action\":\"update\",\"id\":2,\"payload\":{\"name\":\"Jivanand\",\"package_name\":\"com.example.jivanand\",\"current_version\":\"1.0.1\"}}\n- Delete: {\"module\":\"apps\",\"action\":\"delete\"}\n\nApp credential: send app_package_name header or payload.app_package_name.\n\nInstall payload example: {\"module\":\"apps\",\"action\":\"install\",\"payload\":{\"app_package_name\":\"com.example.jivanand\",\"device_id\":\"device-12345\",\"device_name\":\"Pixel 8\",\"device_brand\":\"Google\",\"android_version\":\"15\",\"country_code\":\"IN\",\"app_version\":\"1.0.0\"}}\n\nHeartbeat payload example: {\"module\":\"apps\",\"action\":\"heartbeat\",\"payload\":{\"app_package_name\":\"com.example.jivanand\",\"device_id\":\"device-12345\",\"app_version\":\"1.0.0\"}}\n\nSave FCM token example: {\"module\":\"apps\",\"action\":\"save-token\",\"payload\":{\"app_package_name\":\"com.example.jivanand\",\"device_id\":\"device-12345\",\"fcm_token\":\"firebase-device-token\",\"is_active\":true}}", tags: ['Universal'], parameters: [
-    new OA\Parameter(name: 'app_package_name', in: 'header', required: false, description: 'Optional when app_package_name is sent inside payload.', schema: new OA\Schema(type: 'string'), example: 'com.example.jivanand'),
+    new OA\Parameter(name: 'X-App-Package-Name', in: 'header', required: false, description: 'Optional when app_package_name is sent inside payload.', schema: new OA\Schema(type: 'string'), example: 'com.example.jivanand'),
 ], requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(ref: '#/components/schemas/UniversalRequest')), responses: [
     new OA\Response(response: 200, description: 'Universal action completed', content: new OA\JsonContent(ref: '#/components/schemas/ApiSuccess')),
     new OA\Response(response: 201, description: 'Universal resource created', content: new OA\JsonContent(ref: '#/components/schemas/ApiSuccess')),
@@ -83,7 +83,7 @@ use OpenApi\Attributes as OA;
     new OA\Response(response: 422, description: 'Validation failed', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
 ])]
 #[OA\Get(path: '/ad-config', description: 'Fetch Android ad config in the new mobile contract. Response data is always an array with one object.', tags: ['Android App'], parameters: [
-    new OA\Parameter(name: 'app_package_name', in: 'header', required: true, schema: new OA\Schema(type: 'string'), example: 'com.example.jivanand'),
+    new OA\Parameter(name: 'X-App-Package-Name', in: 'header', required: true, schema: new OA\Schema(type: 'string'), example: 'com.example.jivanand'),
 ], responses: [
     new OA\Response(response: 200, description: 'Ad config fetched', content: new OA\JsonContent(ref: '#/components/schemas/AdConfigResponse')),
     new OA\Response(response: 401, description: 'Invalid app package name', content: new OA\JsonContent(ref: '#/components/schemas/ApiSuccess')),

@@ -91,6 +91,7 @@
                     </div>
                 </form>
 
+                {{--
                 <div class="mt-8 pt-8 border-t border-slate-100 text-center">
                     <p class="text-sm text-slate-500 font-medium">
                         New to the platform?
@@ -99,6 +100,7 @@
                         </a>
                     </p>
                 </div>
+                --}}
             </div>
             
             <p class="mt-10 text-center text-xs text-slate-400 font-medium uppercase tracking-widest">

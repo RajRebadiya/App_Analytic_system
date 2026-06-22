@@ -12,6 +12,14 @@ class AdminNotificationService
 
     public function send(PushNotification $notification): array
     {
+        if (! $notification->is_active) {
+            return [
+                'successful' => false,
+                'status_code' => null,
+                'response' => ['error' => 'Cannot send an inactive notification.'],
+            ];
+        }
+
         try {
             $app = $notification->app;
             if (! $app?->onesignal_app_id || ! $app?->onesignal_api_key) {

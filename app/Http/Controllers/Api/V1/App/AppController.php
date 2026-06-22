@@ -30,7 +30,13 @@ class AppController extends Controller
 
     public function heartbeat(HeartbeatRequest $request): JsonResponse
     {
-        return $this->success('Heartbeat tracked', $this->service->heartbeat($this->app($request), $request->validated()));
+        $installation = $this->service->heartbeat($this->app($request), $request->validated());
+
+        if (! $installation) {
+            return $this->error('Installation not found for this device.', 404);
+        }
+
+        return $this->success('Heartbeat tracked', $installation);
     }
 
     public function saveToken(SaveTokenRequest $request): JsonResponse

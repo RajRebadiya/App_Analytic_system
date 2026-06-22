@@ -21,6 +21,11 @@ class SendPushNotificationJob implements ShouldQueue
     public function handle(FirebaseCloudMessagingService $fcm): void
     {
         $notification = PushNotification::query()->findOrFail($this->notificationId);
+
+        if (! $notification->is_active) {
+            return;
+        }
+
         $sent = 0;
         $failed = 0;
 

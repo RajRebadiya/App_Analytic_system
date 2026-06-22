@@ -45,12 +45,23 @@ class AppManagementService
         return $installation;
     }
 
-    public function heartbeat(AndroidApp $app, array $data): AppInstallation
+    public function heartbeat(AndroidApp $app, array $data): ?AppInstallation
     {
-        return AppInstallation::query()->updateOrCreate(
-            ['app_id' => $app->id, 'device_id' => $data['device_id']],
-            ['app_version' => $data['app_version'] ?? $app->current_version, 'last_active_at' => Carbon::now()],
-        );
+        $installation = AppInstallation::query()
+            ->where('app_id', $app->id)
+            ->where('device_id', $data['device_id'])
+            ->first();
+
+        if (! $installation) {
+            return null;
+        }
+
+        $installation->update([
+            'app_version' => $data['app_version'] ?? $app->current_version,
+            'last_active_at' => Carbon::now(),
+        ]);
+
+        return $installation;
     }
 
     public function saveToken(AndroidApp $app, array $data): DeviceToken

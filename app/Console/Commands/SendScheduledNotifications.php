@@ -30,6 +30,7 @@ class SendScheduledNotifications extends Command
     {
         $notifications = PushNotification::query()
             ->where('status', 'pending')
+            ->where('is_active', true)
             ->whereNotNull('scheduled_at')
             ->where('scheduled_at', '<=', now())
             ->get();

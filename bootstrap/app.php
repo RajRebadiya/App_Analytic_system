@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\EnsureAdmin::class,
             'app.auth' => \App\Http\Middleware\AuthenticateApp::class,
             'api.log' => \App\Http\Middleware\LogApiRequest::class,
+            'block.swagger' => \App\Http\Middleware\BlockSwaggerDocumentation::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

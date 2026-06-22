@@ -26,7 +26,7 @@ Route::prefix('v1')->group(function (): void {
         Route::get('notifications', [AppController::class, 'notifications']);
     });
 
-    Route::post('admin/register', [AuthController::class, 'register'])->middleware('throttle:login');
+    // Route::post('admin/register', [AuthController::class, 'register'])->middleware('throttle:login');
     Route::post('admin/login', [AuthController::class, 'login'])->middleware('throttle:login');
 
     Route::prefix('admin')->middleware(['api.log', 'throttle:admin-api'])->group(function (): void {

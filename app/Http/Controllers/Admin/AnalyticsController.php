@@ -21,7 +21,7 @@ class AnalyticsController extends Controller
 
         return view('admin.analytics.installations', [
             'apps' => AndroidApp::query()->orderBy('name')->get(),
-            'installations' => (clone $query)->with('app')->latest()->paginate(20)->withQueryString(),
+            'installations' => (clone $query)->with('app')->latest()->paginate($request->integer('per_page', 10))->withQueryString(),
             'daily' => (clone $eventQuery)->selectRaw('date(created_at) as label, count(*) as total')->groupBy('label')->orderBy('label')->get(),
             'devices' => (clone $eventQuery)->select('device_brand', DB::raw('count(*) as total'))->groupBy('device_brand')->orderByDesc('total')->limit(10)->get(),
             'androidVersions' => (clone $eventQuery)->select('android_version', DB::raw('count(*) as total'))->groupBy('android_version')->orderByDesc('total')->limit(10)->get(),
@@ -67,7 +67,7 @@ class AnalyticsController extends Controller
 
         return view('admin.analytics.events', [
             'apps' => AndroidApp::query()->orderBy('name')->get(),
-            'events' => (clone $query)->latest()->paginate(20)->withQueryString(),
+            'events' => (clone $query)->latest()->paginate($request->integer('per_page', 10))->withQueryString(),
             'breakdown' => (clone $query)->select('event_name', DB::raw('count(*) as total'))->groupBy('event_name')->orderByDesc('total')->get(),
         ]);
     }

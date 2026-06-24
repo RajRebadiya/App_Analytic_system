@@ -95,6 +95,168 @@
                         allowInput: true,
                     });
                 });
+
+                // Custom Date Range Picker Component Logic
+                $('.date-range-picker-container').each(function () {
+                    const $container = $(this);
+                    const $trigger = $container.find('.daterange-trigger');
+                    const $dropdown = $container.find('.daterange-dropdown');
+                    const $displayText = $container.find('.daterange-display-text');
+                    const $fromInput = $container.find('input[name="from"]');
+                    const $toInput = $container.find('input[name="to"]');
+                    const $flatpickrInput = $container.find('.daterange-flatpickr');
+
+                    const today = new Date();
+                    const formatDate = (d) => {
+                        const y = d.getFullYear();
+                        const m = String(d.getMonth() + 1).padStart(2, '0');
+                        const day = String(d.getDate()).padStart(2, '0');
+                        return `${y}-${m}-${day}`;
+                    };
+                    const formatDisplay = (dateStr) => {
+                        if (!dateStr) return '';
+                        const parts = dateStr.split('-');
+                        if (parts.length === 3) {
+                            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                        }
+                        return dateStr;
+                    };
+
+                    const todayStr = formatDate(today);
+                    const getRelativeDateStr = (offset) => {
+                        const d = new Date();
+                        d.setDate(d.getDate() + offset);
+                        return formatDate(d);
+                    };
+
+                    const yesterdayStr = getRelativeDateStr(-1);
+                    const last7Str = getRelativeDateStr(-6);
+                    const last30Str = getRelativeDateStr(-29);
+
+                    const thisMonthStart = formatDate(new Date(today.getFullYear(), today.getMonth(), 1));
+                    const lastMonthStart = formatDate(new Date(today.getFullYear(), today.getMonth() - 1, 1));
+                    const lastMonthEnd = formatDate(new Date(today.getFullYear(), today.getMonth(), 0));
+
+                    let activeRange = 'custom';
+                    const fromVal = $fromInput.val();
+                    const toVal = $toInput.val();
+
+                    if (fromVal && toVal) {
+                        if (fromVal === todayStr && toVal === todayStr) {
+                            activeRange = 'today';
+                        } else if (fromVal === yesterdayStr && toVal === yesterdayStr) {
+                            activeRange = 'yesterday';
+                        } else if (fromVal === last7Str && toVal === todayStr) {
+                            activeRange = 'last_7';
+                        } else if (fromVal === last30Str && toVal === todayStr) {
+                            activeRange = 'last_30';
+                        } else if (fromVal === thisMonthStart && toVal === todayStr) {
+                            activeRange = 'this_month';
+                        } else if (fromVal === lastMonthStart && toVal === lastMonthEnd) {
+                            activeRange = 'last_month';
+                        }
+                        $displayText.text(`${formatDisplay(fromVal)} - ${formatDisplay(toVal)}`).removeClass('text-slate-500').addClass('text-slate-800 font-semibold');
+                    } else {
+                        $displayText.text('Select Date Range').addClass('text-slate-500').removeClass('text-slate-800 font-semibold');
+                    }
+
+                    // Style the active item in the dropdown
+                    $dropdown.find('.daterange-item').removeClass('bg-blue-600 text-white font-semibold').addClass('text-slate-700 hover:bg-slate-50');
+                    const $activeItem = $dropdown.find(`[data-range="${activeRange}"]`);
+                    if ($activeItem.length) {
+                        $activeItem.addClass('bg-blue-600 text-white font-semibold').removeClass('text-slate-700 hover:bg-slate-50');
+                    }
+
+                    // Toggle dropdown opening/closing
+                    $trigger.on('click', function (e) {
+                        e.stopPropagation();
+                        const isHidden = $dropdown.hasClass('hidden');
+                        if (isHidden) {
+                            // Close other date picker dropdowns if any
+                            $('.daterange-dropdown').addClass('hidden');
+                            $('.daterange-trigger').removeClass('border-blue-500 ring-2 ring-blue-100').addClass('border-slate-200');
+                            $('.daterange-trigger').find('[data-lucide="chevron-down"]').removeClass('rotate-180');
+
+                            $dropdown.removeClass('hidden');
+                            $trigger.addClass('border-blue-500 ring-2 ring-blue-100').removeClass('border-slate-200');
+                            $trigger.find('[data-lucide="chevron-down"]').addClass('rotate-180');
+                        } else {
+                            $dropdown.addClass('hidden');
+                            $trigger.removeClass('border-blue-500 ring-2 ring-blue-100').addClass('border-slate-200');
+                            $trigger.find('[data-lucide="chevron-down"]').removeClass('rotate-180');
+                        }
+                    });
+
+                    // Hide dropdown when clicking outside
+                    $(document).on('click', function (e) {
+                        if (!$container.is(e.target) && $container.has(e.target).length === 0) {
+                            $dropdown.addClass('hidden');
+                            $trigger.removeClass('border-blue-500 ring-2 ring-blue-100').addClass('border-slate-200');
+                            $trigger.find('[data-lucide="chevron-down"]').removeClass('rotate-180');
+                        }
+                    });
+
+                    // Handle preset selection
+                    $dropdown.find('.daterange-item').on('click', function (e) {
+                        const range = $(this).data('range');
+                        if (range === 'custom') {
+                            e.stopPropagation();
+                            $dropdown.addClass('hidden');
+                            $trigger.removeClass('border-blue-500 ring-2 ring-blue-100').addClass('border-slate-200');
+                            $trigger.find('[data-lucide="chevron-down"]').removeClass('rotate-180');
+                            fp.open();
+                            return;
+                        }
+
+                        let from = '';
+                        let to = '';
+                        switch (range) {
+                            case 'today':
+                                from = todayStr;
+                                to = todayStr;
+                                break;
+                            case 'yesterday':
+                                from = yesterdayStr;
+                                to = yesterdayStr;
+                                break;
+                            case 'last_7':
+                                from = last7Str;
+                                to = todayStr;
+                                break;
+                            case 'last_30':
+                                from = last30Str;
+                                to = todayStr;
+                                break;
+                            case 'this_month':
+                                from = thisMonthStart;
+                                to = todayStr;
+                                break;
+                            case 'last_month':
+                                from = lastMonthStart;
+                                to = lastMonthEnd;
+                                break;
+                        }
+
+                        $fromInput.val(from);
+                        $toInput.val(to);
+                        $container.closest('form').submit();
+                    });
+
+                    // Initialize flatpickr internally on the hidden input for Custom Range selection
+                    const fp = flatpickr($flatpickrInput[0], {
+                        mode: 'range',
+                        dateFormat: 'Y-m-d',
+                        onClose: function (selectedDates, dateStr, instance) {
+                            if (selectedDates.length === 2) {
+                                const from = formatDate(selectedDates[0]);
+                                const to = formatDate(selectedDates[1]);
+                                $fromInput.val(from);
+                                $toInput.val(to);
+                                $container.closest('form').submit();
+                            }
+                        }
+                    });
+                });
             }
             
             // Image preview helper
@@ -113,6 +275,14 @@
                 if (!confirm($(this).data('confirm'))) {
                     e.preventDefault();
                 }
+            });
+
+            // Pagination Per Page change handler
+            $(document).on('change', '.per-page-select', function () {
+                const url = new URL(window.location.href);
+                url.searchParams.set('per_page', this.value);
+                url.searchParams.set('page', 1);
+                window.location.href = url.href;
             });
         });
     </script>

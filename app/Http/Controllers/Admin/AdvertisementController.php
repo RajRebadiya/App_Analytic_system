@@ -17,7 +17,7 @@ class AdvertisementController extends Controller
 
     public function index(Request $request): View
     {
-        $advertisements = Advertisement::query()->with('app')->when($request->app_id, fn ($query, int $appId) => $query->where('app_id', $appId))->latest()->paginate(15)->withQueryString();
+        $advertisements = Advertisement::query()->with('app')->when($request->app_id, fn ($query, int $appId) => $query->where('app_id', $appId))->latest()->paginate($request->integer('per_page', 10))->withQueryString();
 
         return view('admin.advertisements.index', ['advertisements' => $advertisements, 'apps' => AndroidApp::query()->orderBy('name')->get()]);
     }

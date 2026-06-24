@@ -54,7 +54,6 @@
                                 </div>
                                 <div class="ml-4">
                                     <div class="text-sm font-bold text-slate-900">{{ $app->name }}</div>
-                                    <div class="text-xs text-slate-500">ID: {{ $app->app_id }}</div>
                                 </div>
                             </div>
                         </td>

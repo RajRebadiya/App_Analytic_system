@@ -20,7 +20,7 @@ class AppController extends Controller
         $apps = AndroidApp::query()
             ->when($request->search, fn ($query, string $search) => $query->where('name', 'like', "%{$search}%")->orWhere('package_name', 'like', "%{$search}%"))
             ->latest()
-            ->paginate(15)
+            ->paginate($request->integer('per_page', 10))
             ->withQueryString();
 
         return view('admin.apps.index', compact('apps'));

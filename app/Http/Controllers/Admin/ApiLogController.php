@@ -19,7 +19,7 @@ class ApiLogController extends Controller
                     ->orWhere('ip_address', 'like', "%{$search}%");
             }))
             ->latest()
-            ->paginate(25)
+            ->paginate($request->integer('per_page', 10))
             ->withQueryString();
 
         return view('admin.api-logs.index', compact('logs'));

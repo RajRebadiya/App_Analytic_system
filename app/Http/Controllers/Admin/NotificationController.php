@@ -27,7 +27,7 @@ class NotificationController extends Controller
             ->withCount('logs')
             ->when($request->app_id, fn ($query, int $appId) => $query->where('app_id', $appId))
             ->latest()
-            ->paginate(15)
+            ->paginate($request->integer('per_page', 10))
             ->withQueryString();
 
         return view('admin.notifications.index', ['notifications' => $notifications, 'apps' => AndroidApp::query()->orderBy('name')->get()]);
@@ -137,7 +137,7 @@ class NotificationController extends Controller
 
     public function logs(PushNotification $notification): View
     {
-        return view('admin.notifications.logs', ['notification' => $notification, 'logs' => $notification->logs()->latest()->paginate(25)]);
+        return view('admin.notifications.logs', ['notification' => $notification, 'logs' => $notification->logs()->latest()->paginate(request()->integer('per_page', 10))]);
     }
 
     private function errorMessage(array $result): string

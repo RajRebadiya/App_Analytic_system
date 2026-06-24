@@ -18,7 +18,7 @@ class AppVersionController extends Controller
             ->with('app')
             ->when($request->app_id, fn ($query, int $appId) => $query->where('app_id', $appId))
             ->latest()
-            ->paginate(15)
+            ->paginate($request->integer('per_page', 10))
             ->withQueryString();
 
         return view('admin.versions.index', ['versions' => $versions, 'apps' => AndroidApp::query()->orderBy('name')->get()]);

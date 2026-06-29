@@ -1,9 +1,9 @@
 @extends('admin.layouts.app', ['title' => 'Delivery Logs', 'heading' => 'Notification Delivery Logs', 'subtitle' => 'Detailed per-device transmission logs for the selected notification.'])
 
 @section('content')
-<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-8 flex items-center justify-between">
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 mb-8 flex flex-wrap items-start sm:items-center justify-between gap-4">
     <div>
-        <h4 class="text-lg font-bold text-slate-900">{{ $notification->title }}</h4>
+        <h4 class="text-base sm:text-lg font-bold text-slate-900">{{ $notification->title }}</h4>
         <p class="text-sm text-slate-500 font-medium">Broadcast Statistics</p>
     </div>
     <div class="flex gap-6">

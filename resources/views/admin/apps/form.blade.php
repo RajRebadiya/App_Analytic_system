@@ -1,7 +1,7 @@
 @extends('admin.layouts.app', ['title' => $app->exists ? 'Edit App' : 'Add App', 'heading' => $app->exists ? 'Edit Application' : 'Register New Application', 'subtitle' => 'Provide the necessary details to manage your Android application on the platform.'])
 
 @section('content')
-<div class="max-w-4xl">
+<div class="max-w-4xl w-full">
     <form action="{{ $app->exists ? route('admin.apps.update', $app) : route('admin.apps.store') }}" method="POST" class="space-y-8">
         @csrf
         @if($app->exists) @method('PUT') @endif
@@ -11,7 +11,7 @@
                 <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Application Details</h3>
             </div>
             
-            <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 <div>
                     <label for="name" class="block text-sm font-bold text-slate-700 mb-2">App Name</label>
                     <input type="text" name="name" id="name" value="{{ old('name', $app->name) }}" required
@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            <div class="px-6 pb-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="px-4 sm:px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
                 <div>
                     <label for="onesignal_app_id" class="block text-sm font-bold text-slate-700 mb-2">OneSignal App ID</label>
                     <input type="text" name="onesignal_app_id" id="onesignal_app_id" value="{{ old('onesignal_app_id', $app->onesignal_app_id) }}"

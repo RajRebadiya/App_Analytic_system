@@ -1,5 +1,5 @@
-<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-8">
-    <form method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+    <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 items-end">
         <div>
             <label class="block text-sm font-semibold text-slate-700 mb-2">Select Application</label>
             <div class="relative">
@@ -19,7 +19,7 @@
             <input name="country_code" type="text" value="{{ request('country_code') }}" placeholder="IN, US"
                    class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm font-medium text-slate-700 uppercase">
         </div>
-        <div class="md:col-span-2 relative">
+        <div class="sm:col-span-2 relative">
             <label class="block text-sm font-semibold text-slate-700 mb-2">Date Range</label>
             <div class="relative date-range-picker-container" data-from="{{ request('from') }}" data-to="{{ request('to') }}">
                 <input type="hidden" name="from" value="{{ request('from') }}">
@@ -47,7 +47,7 @@
                 <input type="text" class="daterange-flatpickr absolute opacity-0 pointer-events-none inset-0 w-full h-full">
             </div>
         </div>
-        <div>
+        <div class="sm:col-span-2 lg:col-span-1">
             <button type="submit" class="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg shadow-indigo-100 transition-all duration-200">
                 <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
                 Refresh Data

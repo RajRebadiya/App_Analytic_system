@@ -33,8 +33,8 @@
     </style>
     @stack('styles')
 </head>
-<body class="h-full overflow-hidden">
-    <div class="flex h-full overflow-hidden">
+<body class="h-full">
+    <div class="flex h-full overflow-hidden relative">
         <!-- Sidebar -->
         @include('admin.layouts.sidebar')
 
@@ -45,16 +45,16 @@
 
             <!-- Content Area -->
             <main class="flex-1 overflow-y-auto focus:outline-none">
-                <div class="py-6">
+                <div class="py-4 sm:py-6">
                     <div class="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
-                        <div class="flex flex-col mb-6 md:flex-row md:items-center md:justify-between gap-4">
-                            <div>
-                                <h1 class="text-2xl font-bold text-slate-900 leading-tight">{{ $heading ?? $title ?? 'Dashboard' }}</h1>
+                        <div class="flex flex-col mb-4 sm:mb-6 sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div class="min-w-0">
+                                <h1 class="text-xl sm:text-2xl font-bold text-slate-900 leading-tight truncate">{{ $heading ?? $title ?? 'Dashboard' }}</h1>
                                 @isset($subtitle)
-                                    <p class="mt-1 text-sm text-slate-500">{{ $subtitle }}</p>
+                                    <p class="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed">{{ $subtitle }}</p>
                                 @endisset
                             </div>
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0 flex-wrap">
                                 @yield('actions')
                             </div>
                         </div>

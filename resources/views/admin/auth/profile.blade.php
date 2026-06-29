@@ -1,7 +1,7 @@
 @extends('admin.layouts.app', ['title' => 'Profile', 'heading' => 'Account Settings', 'subtitle' => 'Update your personal information and manage your account credentials.'])
 
 @section('content')
-<div class="max-w-4xl">
+<div class="max-w-4xl w-full">
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="p-6 border-b border-slate-100 bg-slate-50/50">
             <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Personal Information</h3>
@@ -35,7 +35,7 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-between pt-6 border-t border-slate-100">
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-slate-100">
                 <a href="{{ route('admin.password.change') }}" class="inline-flex items-center text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
                     <i data-lucide="lock" class="w-4 h-4 mr-2"></i>
                     Change Password

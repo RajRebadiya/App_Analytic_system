@@ -82,7 +82,7 @@
 
     <!-- Base Configuration Card -->
     <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="p-4 sm:p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
                 <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Primary Configuration</h3>
                 <p class="text-xs text-slate-500 font-medium mt-1">Basic status and application assignment.</p>
@@ -122,7 +122,7 @@
     </div>
 
     <!-- Network IDs Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8">
         @foreach($textFields as $section)
             <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden h-full flex flex-col">
                 <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
@@ -131,7 +131,7 @@
                     </div>
                     <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">{{ $section['title'] }}</h3>
                 </div>
-                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+                <div class="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 flex-1">
                     @foreach($section['fields'] as [$field, $label, $placeholder])
                         <div class="{{ $loop->first && count($section['fields']) % 2 !== 0 ? 'md:col-span-2' : '' }}">
                             <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight mb-2">{{ $label }}</label>
@@ -154,7 +154,7 @@
             <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Runtime Ad Rules & Behavior</h3>
         </div>
         
-        <div class="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="p-4 sm:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Display Logic</label>
                 <select name="how_show_ad" class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 transition-all duration-200 sm:text-sm">
@@ -205,7 +205,7 @@
             </div>
             <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Placement Provider Overrides</h3>
         </div>
-        <div class="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="p-4 sm:p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             @foreach($placementFields as [$field, $label])
                 <div>
                     <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">{{ $label }}</label>
@@ -224,7 +224,7 @@
             <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Advanced Controls & Redirects</h3>
         </div>
         <div class="p-8 space-y-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2">Version Codes (CSV)</label>
                     <input name="version_codes" value="{{ $value('version_codes') }}" placeholder="1,2,3" class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 transition-all duration-200 sm:text-sm">
@@ -250,7 +250,7 @@
                     </label>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 mb-8">
                     @foreach($redirectFields as [$field, $label, $placeholder])
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight mb-2">{{ $label }}</label>
@@ -265,7 +265,7 @@
                 </div>
             </div>
 
-            <div class="pt-8 border-t border-slate-100 grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="pt-8 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
                 @foreach([
                     'download_status' => 'Download Button',
                     'background_status' => 'Background Mode',

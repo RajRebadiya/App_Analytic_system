@@ -2,9 +2,9 @@
 
 @section('content')
 <!-- Filters -->
-<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-8">
-    <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-        <div>
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+    <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-end">
+        <div class="sm:col-span-1">
             <label class="block text-sm font-semibold text-slate-700 mb-2">Select App</label>
             <div class="relative">
                 <select name="app_id" class="block w-full pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm appearance-none">
@@ -18,7 +18,7 @@
                 </div>
             </div>
         </div>
-        <div class="md:col-span-2 relative">
+        <div class="sm:col-span-2 relative">
             <label class="block text-sm font-semibold text-slate-700 mb-2">Date Range</label>
             <div class="relative date-range-picker-container" data-from="{{ $filters['from'] ?? '' }}" data-to="{{ $filters['to'] ?? '' }}">
                 <input type="hidden" name="from" value="{{ $filters['from'] ?? '' }}">
@@ -46,7 +46,7 @@
                 <input type="text" class="daterange-flatpickr absolute opacity-0 pointer-events-none inset-0 w-full h-full">
             </div>
         </div>
-        <div>
+        <div class="sm:col-span-2 lg:col-span-1">
             <button type="submit" class="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg shadow-indigo-200 transition-all duration-200">
                 <i data-lucide="filter" class="w-4 h-4 mr-2"></i>
                 Update Analytics
@@ -54,6 +54,7 @@
         </div>
     </form>
 </div>
+
 
 <!-- Stats Grid -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

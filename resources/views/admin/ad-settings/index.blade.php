@@ -8,10 +8,9 @@
 @endsection
 
 @section('content')
-<!-- Filter -->
-<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 mb-8">
-    <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-        <div class="md:col-span-3">
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-4 mb-8">
+    <form method="GET" class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+        <div class="sm:col-span-3">
             <label class="block text-sm font-bold text-slate-700 mb-2">Filter by Application</label>
             <div class="relative">
                 <select name="app_id" class="block w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm appearance-none">
@@ -33,6 +32,7 @@
         </div>
     </form>
 </div>
+
 
 <!-- Settings Table -->
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">

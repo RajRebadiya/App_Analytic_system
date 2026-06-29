@@ -1,7 +1,7 @@
 @extends('admin.layouts.app', ['title' => $notification->exists ? 'Edit Notification' : 'Create Notification', 'heading' => $notification->exists ? 'Edit Notification' : 'Compose Notification', 'subtitle' => $notification->exists ? 'Update your notification details.' : 'Draft a new push notification and send it immediately to all subscribed users.'])
 
 @section('content')
-<div class="max-w-4xl">
+<div class="max-w-4xl w-full">
     <form action="{{ $notification->exists ? route('admin.notifications.update', $notification) : route('admin.notifications.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
         @csrf
         @if($notification->exists)
@@ -46,7 +46,7 @@
                     @error('description')<p class="mt-1 text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start pt-4 border-t border-slate-100">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start pt-4 border-t border-slate-100">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Cover Image (Optional)</label>
                         <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-200 border-dashed rounded-2xl hover:border-indigo-400 hover:bg-slate-50 transition-all duration-200 relative group">

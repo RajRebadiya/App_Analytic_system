@@ -81,7 +81,7 @@
                             </label>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('admin.notifications.show', $notification) }}" 
                                    class="inline-flex items-center px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
                                    title="View Details">

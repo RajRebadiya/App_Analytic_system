@@ -13,7 +13,7 @@
 
         <!-- Pagination Links -->
         <div class="flex-1 flex justify-end">
-            {{ $paginator->links() }}
+            {{ $paginator->onEachSide(1)->links() }}
         </div>
     </div>
 @endif

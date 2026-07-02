@@ -38,6 +38,7 @@ class NotificationController extends Controller
         return view('admin.notifications.form', [
             'notification' => new PushNotification,
             'apps' => AndroidApp::query()->orderBy('name')->get(),
+            'countries' => \App\Models\AppInstallation::query()->whereNotNull('country_code')->distinct()->pluck('country_code'),
         ]);
     }
 
@@ -83,7 +84,11 @@ class NotificationController extends Controller
 
     public function edit(PushNotification $notification): View
     {
-        return view('admin.notifications.form', ['notification' => $notification, 'apps' => AndroidApp::query()->orderBy('name')->get()]);
+        return view('admin.notifications.form', [
+            'notification' => $notification, 
+            'apps' => AndroidApp::query()->orderBy('name')->get(),
+            'countries' => \App\Models\AppInstallation::query()->whereNotNull('country_code')->distinct()->pluck('country_code'),
+        ]);
     }
 
     public function update(NotificationRequest $request, PushNotification $notification): RedirectResponse
@@ -99,6 +104,59 @@ class NotificationController extends Controller
         $data['image'] = $this->uploads->publicImage($request->file('image_file'), 'notification') ?? ($data['image'] ?? $notification->image);
         unset($data['image_file'], $data['send_now']);
         $notification->update($data);
+
+        // Handle rescheduling and syncing for everyday/once notifications
+        $scheduleFrequency = $data['schedule_frequency'] ?? 'once';
+
+        if ($scheduleFrequency === 'once') {
+            if (!empty($data['scheduled_at'])) {
+                $scheduledAt = \Illuminate\Support\Carbon::parse($data['scheduled_at']);
+                if ($scheduledAt->isFuture()) {
+                    $notification->update(['status' => 'pending']);
+                }
+            }
+        } elseif ($scheduleFrequency === 'everyday') {
+            $parentId = $notification->parent_id ?? $notification->id;
+
+            // Find the upcoming pending instance in this series
+            $pendingNotification = PushNotification::query()
+                ->where('parent_id', $parentId)
+                ->where('status', 'pending')
+                ->where('id', '!=', $notification->id)
+                ->first();
+
+            if ($pendingNotification) {
+                $pendingData = [
+                    'title' => $data['title'],
+                    'description' => $data['description'],
+                    'image' => $data['image'],
+                    'app_id' => $data['app_id'],
+                    'target_country' => $data['target_country'] ?? null,
+                    'redirect_screen' => $data['redirect_screen'] ?? null,
+                    'redirect_data' => $data['redirect_data'] ?? null,
+                    'is_active' => $notification->is_active,
+                ];
+
+                if (!empty($data['scheduled_at'])) {
+                    $newScheduledTime = \Illuminate\Support\Carbon::parse($data['scheduled_at']);
+                    // If we edited a previously sent notification, we only sync the time on the pending one
+                    if ($notification->status !== 'pending') {
+                        $pendingData['scheduled_at'] = $pendingNotification->scheduled_at->setTimeFrom($newScheduledTime);
+                    }
+                }
+
+                $pendingNotification->update($pendingData);
+            } else {
+                // No pending notification exists. If the user set a future scheduled_at,
+                // we mark this notification itself as pending to resume/start the cycle.
+                if (!empty($data['scheduled_at'])) {
+                    $scheduledAt = \Illuminate\Support\Carbon::parse($data['scheduled_at']);
+                    if ($scheduledAt->isFuture()) {
+                        $notification->update(['status' => 'pending']);
+                    }
+                }
+            }
+        }
 
         return redirect()->route('admin.notifications.index')->with('status', 'Notification updated.');
     }

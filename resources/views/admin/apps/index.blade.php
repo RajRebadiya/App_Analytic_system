@@ -70,7 +70,7 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('admin.apps.edit', $app) }}" 
                                    class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
                                    title="Edit App">
@@ -83,6 +83,15 @@
                                             class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
                                             title="{{ $app->status === 'active' ? 'Suspend' : 'Activate' }}">
                                         <i data-lucide="{{ $app->status === 'active' ? 'pause-circle' : 'play-circle' }}" class="w-4 h-4"></i>
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ route('admin.apps.destroy', $app) }}" data-confirm="Are you sure you want to permanently delete this app? All associated data will be lost.">
+                                    @csrf 
+                                    @method('DELETE')
+                                    <button type="submit" 
+                                            class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                                            title="Delete App">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
                                     </button>
                                 </form>
                             </div>

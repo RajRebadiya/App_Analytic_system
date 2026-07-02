@@ -1,7 +1,10 @@
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
-    <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 items-end">
+    <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 sm:gap-6 items-end">
         <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-2">Select Application</label>
+            <label class="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1.5">
+                <i data-lucide="smartphone" class="w-4 h-4 text-slate-400"></i>
+                Select Application
+            </label>
             <div class="relative">
                 <select name="app_id" class="block w-full pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm appearance-none font-medium text-slate-700">
                     <option value="">All Applications</option>
@@ -15,12 +18,18 @@
             </div>
         </div>
         <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-2">Country Code</label>
+            <label class="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1.5">
+                <i data-lucide="globe" class="w-4 h-4 text-slate-400"></i>
+                Country Code
+            </label>
             <input name="country_code" type="text" value="{{ request('country_code') }}" placeholder="IN, US"
                    class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm font-medium text-slate-700 uppercase">
         </div>
         <div class="sm:col-span-2 relative">
-            <label class="block text-sm font-semibold text-slate-700 mb-2">Date Range</label>
+            <label class="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1.5">
+                <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
+                Date Range
+            </label>
             <div class="relative date-range-picker-container" data-from="{{ request('from') }}" data-to="{{ request('to') }}">
                 <input type="hidden" name="from" value="{{ request('from') }}">
                 <input type="hidden" name="to" value="{{ request('to') }}">
@@ -47,6 +56,40 @@
                 <input type="text" class="daterange-flatpickr absolute opacity-0 pointer-events-none inset-0 w-full h-full">
             </div>
         </div>
+        <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1.5">
+                <i data-lucide="clock" class="w-4 h-4 text-slate-400"></i>
+                Hour Range
+            </label>
+            <div class="flex gap-2">
+                <div class="relative flex-1">
+                    <select name="start_hour" id="start_hour" class="block w-full pl-3 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm appearance-none font-medium text-slate-700">
+                        <option value="">From</option>
+                        @for($h = 0; $h <= 23; $h++)
+                            <option value="{{ $h }}" @selected(request('start_hour') !== null && request('start_hour') !== '' && request('start_hour') == $h)>
+                                {{ sprintf('%02d:00', $h) }} ({{ $h == 0 ? '12 AM' : ($h < 12 ? $h . ' AM' : ($h == 12 ? '12 PM' : ($h - 12) . ' PM')) }})
+                            </option>
+                        @endfor
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-slate-400">
+                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                    </div>
+                </div>
+                <div class="relative flex-1">
+                    <select name="end_hour" id="end_hour" class="block w-full pl-3 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm appearance-none font-medium text-slate-700">
+                        <option value="">To</option>
+                        @for($h = 0; $h <= 23; $h++)
+                            <option value="{{ $h }}" @selected(request('end_hour') !== null && request('end_hour') !== '' && request('end_hour') == $h)>
+                                {{ sprintf('%02d:00', $h) }} ({{ $h == 0 ? '12 AM' : ($h < 12 ? $h . ' AM' : ($h == 12 ? '12 PM' : ($h - 12) . ' PM')) }})
+                            </option>
+                        @endfor
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-slate-400">
+                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="sm:col-span-2 lg:col-span-1">
             <button type="submit" class="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg shadow-indigo-100 transition-all duration-200">
                 <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
@@ -55,3 +98,41 @@
         </div>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var startHourSelect = document.getElementById('start_hour');
+    var endHourSelect = document.getElementById('end_hour');
+
+    if (startHourSelect && endHourSelect) {
+        function updateEndHourOptions() {
+            var startVal = startHourSelect.value;
+            if (startVal !== '') {
+                var startHour = parseInt(startVal);
+                for (var i = 0; i < endHourSelect.options.length; i++) {
+                    var opt = endHourSelect.options[i];
+                    if (opt.value !== '') {
+                        var endHour = parseInt(opt.value);
+                        if (endHour < startHour) {
+                            opt.disabled = true;
+                        } else {
+                            opt.disabled = false;
+                        }
+                    }
+                }
+                var currentEndVal = endHourSelect.value;
+                if (currentEndVal !== '' && parseInt(currentEndVal) < startHour) {
+                    endHourSelect.value = '';
+                }
+            } else {
+                for (var i = 0; i < endHourSelect.options.length; i++) {
+                    endHourSelect.options[i].disabled = false;
+                }
+            }
+        }
+
+        startHourSelect.addEventListener('change', updateEndHourOptions);
+        updateEndHourOptions();
+    }
+});
+</script>

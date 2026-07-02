@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['app_id', 'title', 'description', 'image', 'onesignal_response', 'status', 'is_active', 'notification_type', 'send_to', 'redirect_screen', 'redirect_data', 'total_sent', 'total_failed', 'created_by', 'scheduled_at', 'schedule_frequency'])]
+#[Fillable(['app_id', 'parent_id', 'title', 'description', 'image', 'onesignal_response', 'status', 'is_active', 'notification_type', 'send_to', 'target_country', 'redirect_screen', 'redirect_data', 'total_sent', 'total_failed', 'created_by', 'scheduled_at', 'schedule_frequency'])]
 class PushNotification extends Model
 {
     protected $table = 'notifications';
@@ -24,6 +24,16 @@ class PushNotification extends Model
     public function app(): BelongsTo
     {
         return $this->belongsTo(AndroidApp::class, 'app_id');
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(PushNotification::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(PushNotification::class, 'parent_id');
     }
 
     public function creator(): BelongsTo

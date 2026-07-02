@@ -26,6 +26,24 @@
                     <p class="mt-2 text-xs text-slate-500 font-medium">App-level OneSignal credentials are configured in the App edit screen and reused automatically.</p>
                 </div>
 
+                <div>
+                    <label for="target_country" class="block text-sm font-bold text-slate-700 mb-2">Target Country</label>
+                    <select name="target_country" id="target_country" class="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all duration-200 sm:text-sm @error('target_country') border-rose-300 bg-rose-50 @enderror">
+                        <option value="">All Countries</option>
+                        @if(isset($countries) && count($countries) > 0)
+                            @foreach($countries as $code)
+                                @php
+                                    $countryName = class_exists('Locale') ? \Locale::getDisplayRegion('-' . strtoupper($code), 'en') : strtoupper($code);
+                                    $countryName = $countryName ?: strtoupper($code);
+                                @endphp
+                                <option value="{{ $code }}" @selected(old('target_country', $notification->target_country) == $code)>{{ $countryName }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                    @error('target_country')<p class="mt-1 text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
+                    <p class="mt-2 text-xs text-slate-500 font-medium">Leave as "All Countries" to send to everyone. Select a country to filter target audience.</p>
+                </div>
+
                 <div class="border-t border-slate-100 pt-6">
                     <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-6">Notification Content</h4>
                 </div>
@@ -100,7 +118,7 @@
                 <div class="p-1.5 bg-emerald-500 rounded-lg text-white shadow-lg shadow-emerald-500/20">
                     <i data-lucide="globe" class="w-4 h-4"></i>
                 </div>
-                <p class="text-xs font-bold text-emerald-800">This notification will be broadcasted to all active segments.</p>
+                <p id="target_country_info" class="text-xs font-bold text-emerald-800">This notification will be broadcasted to all active segments.</p>
             </div>
         </div>
 
@@ -142,6 +160,16 @@ $(function() {
         }
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
+        }
+    }).trigger('change');
+
+    $('#target_country').on('change', function() {
+        let val = $(this).val();
+        if (val) {
+            let countryName = $(this).find('option:selected').text();
+            $('#target_country_info').text('This notification will be sent exclusively to users in ' + countryName + '.');
+        } else {
+            $('#target_country_info').text('This notification will be broadcasted to all active segments.');
         }
     }).trigger('change');
 });

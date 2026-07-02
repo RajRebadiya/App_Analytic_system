@@ -151,6 +151,10 @@ $(function() {
     const chartDefaults = {
         responsive: true,
         maintainAspectRatio: false,
+        interaction: {
+            intersect: false,
+            mode: 'index',
+        },
         plugins: {
             legend: { display: false },
             tooltip: {
@@ -173,13 +177,13 @@ $(function() {
             }
         }
     };
-
+ 
     const makeLine = (id, labels, data, label, color) => {
         const ctx = document.getElementById(id).getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 300);
         gradient.addColorStop(0, color + '33');
         gradient.addColorStop(1, color + '00');
-
+ 
         return new Chart(ctx, {
             type: 'line',
             data: {
@@ -192,8 +196,11 @@ $(function() {
                     backgroundColor: gradient,
                     fill: true,
                     tension: 0.4,
-                    pointRadius: 0,
-                    pointHoverRadius: 6,
+                    pointRadius: 4,
+                    pointBackgroundColor: color,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 1.5,
+                    pointHoverRadius: 7,
                     pointHoverBackgroundColor: color,
                     pointHoverBorderColor: '#fff',
                     pointHoverBorderWidth: 3

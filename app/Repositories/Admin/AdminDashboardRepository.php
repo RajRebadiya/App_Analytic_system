@@ -16,18 +16,30 @@ class AdminDashboardRepository
 {
     public function cards(array $filters = []): array
     {
-        $installEvents = $this->installEvents($filters);
-        $installations = $this->installations($filters);
-        $notifications = PushNotification::query()->when($filters['app_id'] ?? null, fn (Builder $query, int $appId) => $query->where('app_id', $appId));
+        $appId = $filters['app_id'] ?? null;
+        $from = $filters['from'] ?? null;
+        $to = $filters['to'] ?? null;
+
+        // Base queries
+        $installationsQuery = AppInstallation::query()
+            ->when($appId, fn ($query) => $query->where('app_id', $appId));
+
+        $installEventsQuery = AppInstallEvent::query()
+            ->when($appId, fn ($query) => $query->where('app_id', $appId));
+
+        // Filtered query for date-range specific stats
+        $filteredInstallEvents = (clone $installEventsQuery)
+            ->when($from, fn ($query) => $query->whereDate('created_at', '>=', Carbon::parse($from)))
+            ->when($to, fn ($query) => $query->whereDate('created_at', '<=', Carbon::parse($to)));
 
         return [
             'total_apps' => AndroidApp::query()->count(),
-            'total_installations' => (clone $installEvents)->count(),
-            'today_installations' => (clone $installEvents)->whereDate('created_at', today())->count(),
-            'daily_active_users' => (clone $installations)->whereDate('last_active_at', today())->distinct('device_id')->count('device_id'),
-            'monthly_active_users' => (clone $installations)->where('last_active_at', '>=', now()->subDays(30))->distinct('device_id')->count('device_id'),
-            'total_notifications' => (clone $notifications)->count(),
-            'active_advertisements' => Advertisement::query()->where('status', 'active')->when($filters['app_id'] ?? null, fn (Builder $query, int $appId) => $query->where('app_id', $appId))->count(),
+            'total_installations' => $filteredInstallEvents->count(),
+            'today_installations' => (clone $installEventsQuery)->whereDate('created_at', today())->count(),
+            'daily_active_users' => (clone $installationsQuery)->whereDate('last_active_at', today())->count(),
+            'monthly_active_users' => (clone $installationsQuery)->where('last_active_at', '>=', now()->subDays(30))->count(),
+            'total_notifications' => PushNotification::query()->when($appId, fn ($query) => $query->where('app_id', $appId))->count(),
+            'active_advertisements' => Advertisement::query()->where('status', 'active')->when($appId, fn ($query) => $query->where('app_id', $appId))->count(),
         ];
     }
 
@@ -42,9 +54,16 @@ class AdminDashboardRepository
 
     public function activityTrend(array $filters = []): Collection
     {
-        return $this->installations($filters)
-            ->selectRaw('date(last_active_at) as label, count(distinct device_id) as total')
+        $appId = $filters['app_id'] ?? null;
+        $from = $filters['from'] ?? null;
+        $to = $filters['to'] ?? null;
+
+        return AppInstallation::query()
             ->whereNotNull('last_active_at')
+            ->when($appId, fn ($query) => $query->where('app_id', $appId))
+            ->when($from, fn ($query) => $query->whereDate('last_active_at', '>=', Carbon::parse($from)))
+            ->when($to, fn ($query) => $query->whereDate('last_active_at', '<=', Carbon::parse($to)))
+            ->selectRaw('date(last_active_at) as label, count(distinct device_id) as total')
             ->groupBy('label')
             ->orderBy('label')
             ->get();

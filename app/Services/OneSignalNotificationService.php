@@ -11,7 +11,7 @@ class OneSignalNotificationService
     /**
      * @throws ConnectionException
      */
-    public function sendToAll(string $title, string $description, string $appId, string $apiKey, ?string $imageUrl = null): array
+    public function sendToAll(string $title, string $description, string $appId, string $apiKey, ?string $imageUrl = null, ?string $countryCode = null): array
     {
         if (! $appId || ! $apiKey) {
             throw new RuntimeException('OneSignal credentials are not configured.');
@@ -19,10 +19,17 @@ class OneSignalNotificationService
 
         $payload = [
             'app_id' => $appId,
-            'included_segments' => ['All'],
             'headings' => ['en' => $title],
             'contents' => ['en' => $description],
         ];
+
+        if ($countryCode) {
+            $payload['filters'] = [
+                ['field' => 'country', 'relation' => '=', 'value' => $countryCode]
+            ];
+        } else {
+            $payload['included_segments'] = ['All'];
+        }
 
         if ($imageUrl) {
             $payload['big_picture'] = $imageUrl;

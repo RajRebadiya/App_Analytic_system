@@ -57,6 +57,7 @@ class SendScheduledNotifications extends Command
             if (($notification->schedule_frequency ?? 'once') === 'everyday') {
                 try {
                     $nextNotification = $notification->replicate();
+                    $nextNotification->parent_id = $notification->parent_id ?? $notification->id;
                     $nextNotification->scheduled_at = $notification->scheduled_at->copy()->addDay();
                     $nextNotification->status = 'pending';
                     $nextNotification->onesignal_response = null;

@@ -8,11 +8,13 @@ use Illuminate\Support\Facades\Log;
 
 class AdminNotificationService
 {
-    public function __construct(private readonly OneSignalNotificationService $oneSignal) {}
+    public function __construct(private readonly OneSignalNotificationService $oneSignal)
+    {
+    }
 
     public function send(PushNotification $notification): array
     {
-        if (! $notification->is_active) {
+        if (!$notification->is_active) {
             return [
                 'successful' => false,
                 'status_code' => null,
@@ -22,7 +24,7 @@ class AdminNotificationService
 
         try {
             $app = $notification->app;
-            if (! $app?->onesignal_app_id || ! $app?->onesignal_api_key) {
+            if (!$app?->onesignal_app_id || !$app?->onesignal_api_key) {
                 throw new \RuntimeException('OneSignal credentials are missing for the selected app. Please set them in the app edit screen.');
             }
 
@@ -32,6 +34,7 @@ class AdminNotificationService
                 $app?->onesignal_app_id,
                 $app?->onesignal_api_key,
                 $this->publicImageUrl($notification->image),
+                $notification->target_country
             );
             $recipients = (int) data_get($result, 'response.recipients', 0);
 
@@ -67,7 +70,7 @@ class AdminNotificationService
 
     private function publicImageUrl(?string $image): ?string
     {
-        if (! $image) {
+        if (!$image) {
             return null;
         }
 

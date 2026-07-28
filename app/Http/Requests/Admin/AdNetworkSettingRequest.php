@@ -59,6 +59,7 @@ class AdNetworkSettingRequest extends FormRequest
             'alternate_ad_show' => ['nullable', 'string', 'max:255'],
             'main_click_count' => ['nullable', 'integer', 'min:0'],
             'inner_click_count' => ['nullable', 'integer', 'min:0'],
+            'native_count' => ['nullable', 'integer', 'min:0'],
             'inter_count' => ['nullable', 'integer', 'min:0'],
             'ad_splash' => ['nullable', 'string', 'max:255'],
             'ad_inter' => ['nullable', 'string', 'max:255'],
@@ -68,6 +69,7 @@ class AdNetworkSettingRequest extends FormRequest
             'ad_banner' => ['nullable', 'string', 'max:255'],
             'ad_qureka' => ['nullable', 'string', 'max:255'],
             'dialog_before_ad_show' => ['boolean'],
+            'dialog_show' => ['boolean'],
             'dialog_time_seconds' => ['nullable', 'integer', 'min:0', 'max:60'],
             'need_internet' => ['boolean'],
             'redirect_other_app_status' => ['boolean'],
@@ -95,6 +97,11 @@ class AdNetworkSettingRequest extends FormRequest
             'others' => ['nullable', 'array'],
             'others.*.key' => ['nullable', 'string', 'max:255'],
             'others.*.value' => ['nullable', 'string', 'max:1000'],
+            'affiliate_weburl1' => ['nullable', 'string', 'max:2048'],
+            'affiliate_weburl2' => ['nullable', 'string', 'max:2048'],
+            'affiliate_weburl3' => ['nullable', 'string', 'max:2048'],
+            'affiliate_weburl4' => ['nullable', 'string', 'max:2048'],
+            'affiliate_img_list' => ['nullable', 'string'],
         ];
     }
 }

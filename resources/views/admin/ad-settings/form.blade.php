@@ -7,6 +7,8 @@
         'ad_platform_sequence' => 'Admob',
         'main_click_count' => 1,
         'inner_click_count' => 1,
+        'native_count' => 1,
+        'dialog_show' => false,
         'dialog_time_seconds' => 2,
         'ad_splash' => 'splash_appopen',
         'ad_inter' => 'admob',
@@ -93,6 +95,7 @@
                     'ad_show_status' => 'Show Ads',
                     'admob_status' => 'AdMob Active',
                     'dialog_before_ad_show' => 'Pre-Ad Dialog',
+                    'dialog_show' => 'Dialog Show',
                 ] as $field => $label)
                     <label class="relative inline-flex items-center cursor-pointer group">
                         <input type="hidden" name="{{ $field }}" value="0">
@@ -182,7 +185,11 @@
                 <label class="block text-sm font-bold text-slate-700 mb-2">Inner Click Count</label>
                 <input type="number" name="inner_click_count" value="{{ $value('inner_click_count') }}" class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 transition-all duration-200 sm:text-sm">
             </div>
-            <div class="flex items-center gap-6 md:col-span-2">
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Native Count</label>
+                <input type="number" name="native_count" value="{{ $value('native_count') }}" class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 transition-all duration-200 sm:text-sm">
+            </div>
+            <div class="flex items-center gap-6">
                 <label class="flex items-center cursor-pointer group">
                     <input type="hidden" name="need_internet" value="0">
                     <input type="checkbox" name="need_internet" value="1" @checked(old('need_internet', $setting->need_internet)) class="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600">
@@ -212,6 +219,40 @@
                     <input name="{{ $field }}" value="{{ $value($field) }}" class="block w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 transition-all duration-200 sm:text-sm font-medium">
                 </div>
             @endforeach
+        </div>
+    </div>
+
+    <!-- Affiliate Links & Media -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+            <div class="p-2 bg-white rounded-xl shadow-sm text-cyan-600 border border-slate-100">
+                <i data-lucide="link" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Affiliate Links & Media</h3>
+        </div>
+        <div class="p-4 sm:p-8 space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight mb-2">Affiliate Web URL 1</label>
+                    <input type="text" name="affiliate_weburl1" value="{{ $value('affiliate_weburl1') }}" placeholder="https://..." class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 transition-all duration-200 sm:text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight mb-2">Affiliate Web URL 2</label>
+                    <input type="text" name="affiliate_weburl2" value="{{ $value('affiliate_weburl2') }}" placeholder="https://..." class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 transition-all duration-200 sm:text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight mb-2">Affiliate Web URL 3</label>
+                    <input type="text" name="affiliate_weburl3" value="{{ $value('affiliate_weburl3') }}" placeholder="https://..." class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 transition-all duration-200 sm:text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight mb-2">Affiliate Web URL 4</label>
+                    <input type="text" name="affiliate_weburl4" value="{{ $value('affiliate_weburl4') }}" placeholder="https://..." class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 transition-all duration-200 sm:text-sm">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight mb-2">Affiliate Image List</label>
+                <textarea name="affiliate_img_list" rows="3" placeholder="https://image1.com, https://image2.com..." class="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-600 transition-all duration-200 sm:text-sm">{{ $value('affiliate_img_list') }}</textarea>
+            </div>
         </div>
     </div>
 

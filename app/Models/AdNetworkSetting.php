@@ -136,7 +136,7 @@ class AdNetworkSetting extends Model
             'affiliate_weburl2' => $this->affiliate_weburl2 ?? '',
             'affiliate_weburl3' => $this->affiliate_weburl3 ?? '',
             'affiliate_weburl4' => $this->affiliate_weburl4 ?? '',
-            'affiliate_img_list' => $this->affiliate_img_list ?? '',
+            'affiliate_img_list' => $this->getFormattedAffiliateImgList(),
             'ad_splash' => $this->ad_splash ?? 'splash_appopen',
             'ad_inter' => $this->ad_inter ?? 'admob',
             'ad_appopen' => $this->ad_appopen ?? 'appopen',
@@ -169,8 +169,42 @@ class AdNetworkSetting extends Model
         return $payload;
     }
 
+    public function getFormattedAffiliateImgList(): array
+    {
+        $val = $this->affiliate_img_list;
+
+        if (empty($val)) {
+            return ['', '', '', '', ''];
+        }
+
+        if (is_array($val)) {
+            $items = array_values(array_filter(array_map('trim', $val), fn ($i) => $i !== ''));
+            return ! empty($items) ? $items : ['', '', '', '', ''];
+        }
+
+        if (is_string($val)) {
+            $decoded = json_decode($val, true);
+            if (is_array($decoded)) {
+                $items = array_values(array_filter(array_map('trim', $decoded), fn ($i) => $i !== ''));
+                return ! empty($items) ? $items : ['', '', '', '', ''];
+            }
+
+            $items = array_values(array_filter(array_map('trim', preg_split('/[\r\n,]+/', $val)), fn ($i) => $i !== ''));
+            return ! empty($items) ? $items : ['', '', '', '', ''];
+        }
+
+        return ['', '', '', '', ''];
+    }
+
     public static function normalizePayload(array $data): array
     {
+        if (array_key_exists('affiliate_img_list', $data)) {
+            if (is_array($data['affiliate_img_list'])) {
+                $items = array_values(array_filter(array_map('trim', $data['affiliate_img_list']), fn ($i) => $i !== ''));
+                $data['affiliate_img_list'] = ! empty($items) ? json_encode($items) : null;
+            }
+        }
+
         $aliases = [
             'admob_interid' => 'admob_interstitial_id',
             'admob_bannerid' => 'admob_banner_id',

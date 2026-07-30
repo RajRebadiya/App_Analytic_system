@@ -51,6 +51,7 @@ use OpenApi\Attributes as OA;
     new OA\Property(property: 'ad_small_native', type: 'string', example: 'admob'),
     new OA\Property(property: 'ad_banner', type: 'string', example: 'admob'),
     new OA\Property(property: 'ad_qureka', type: 'string', example: 'off'),
+    new OA\Property(property: 'affiliate_img_list', type: 'array', items: new OA\Items(type: 'string'), example: ['', '', '', '', '']),
     new OA\Property(property: 'privacy_url', type: 'string', example: 'https://example.com/privacy-policy.html'),
     new OA\Property(property: 'redirect_app', type: 'string', example: ''),
     new OA\Property(property: 'new_app_name', type: 'string', example: ''),

@@ -101,7 +101,7 @@ class AdNetworkSettingRequest extends FormRequest
             'affiliate_weburl2' => ['nullable', 'string', 'max:2048'],
             'affiliate_weburl3' => ['nullable', 'string', 'max:2048'],
             'affiliate_weburl4' => ['nullable', 'string', 'max:2048'],
-            'affiliate_img_list' => ['nullable', 'string'],
+            'affiliate_img_list' => ['nullable'],
         ];
     }
 }

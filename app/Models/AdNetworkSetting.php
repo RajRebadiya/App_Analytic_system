@@ -131,7 +131,7 @@ class AdNetworkSetting extends Model
             'wortise_native_id' => $this->wortise_native_id ?? '',
             'inter_count' => (string) $this->main_click_count,
             'native_count' => (string) ($this->native_count ?? 1),
-            'dialog_show' => $this->dialog_show ? 'on' : 'off',
+            'dialog_show' => $this->dialog_show ? 1 : 0,
             'affiliate_weburl1' => $this->affiliate_weburl1 ?? '',
             'affiliate_weburl2' => $this->affiliate_weburl2 ?? '',
             'affiliate_weburl3' => $this->affiliate_weburl3 ?? '',

@@ -36,24 +36,41 @@ class AnalyticsController extends Controller
         $to = $request->to;
         $startHour = $request->start_hour;
         $endHour = $request->end_hour;
+        $countryCode = $request->country_code ? strtoupper(trim($request->country_code)) : null;
 
-        // Base query for active users (must have last_active_at)
-        $query = AppInstallation::query()
-            ->whereNotNull('app_installations.last_active_at')
-            ->when($appId, fn ($query) => $query->where('app_installations.app_id', $appId))
-            ->when($request->country_code, fn ($query, string $countryCode) => $query->where('app_installations.country_code', strtoupper(trim($countryCode))));
+        // Base query for active logs using UNION of app_install_events (historical installs) and app_events (active logs)
+        $installEventsQuery = DB::table('app_install_events')
+            ->select('app_id', 'device_id', 'created_at')
+            ->when($appId, fn ($query) => $query->where('app_id', $appId))
+            ->when($countryCode, fn ($query) => $query->where('country_code', $countryCode))
+            ->when($from, fn ($query) => $query->whereDate('created_at', '>=', $from))
+            ->when($to, fn ($query) => $query->whereDate('created_at', '<=', $to))
+            ->when($startHour !== null && $startHour !== '', fn ($query) => $query->whereRaw('HOUR(created_at) >= ?', [(int) $startHour]))
+            ->when($endHour !== null && $endHour !== '', fn ($query) => $query->whereRaw('HOUR(created_at) <= ?', [(int) $endHour]));
 
-        // For active users, the date range and hour filters should filter by their activity (last_active_at)
-        $activeQuery = (clone $query)
-            ->when($from, fn ($query) => $query->whereDate('app_installations.last_active_at', '>=', $from))
-            ->when($to, fn ($query) => $query->whereDate('app_installations.last_active_at', '<=', $to))
-            ->when($startHour !== null && $startHour !== '', fn ($query) => $query->whereRaw('HOUR(app_installations.last_active_at) >= ?', [$startHour]))
-            ->when($endHour !== null && $endHour !== '', fn ($query) => $query->whereRaw('HOUR(app_installations.last_active_at) <= ?', [$endHour]));
+        $activeEventsQuery = DB::table('app_events')
+            ->select('app_id', 'device_id', 'created_at')
+            ->where('event_name', 'active')
+            ->when($appId, fn ($query) => $query->where('app_id', $appId))
+            ->when($from, fn ($query) => $query->whereDate('created_at', '>=', $from))
+            ->when($to, fn ($query) => $query->whereDate('created_at', '<=', $to))
+            ->when($startHour !== null && $startHour !== '', fn ($query) => $query->whereRaw('HOUR(created_at) >= ?', [(int) $startHour]))
+            ->when($endHour !== null && $endHour !== '', fn ($query) => $query->whereRaw('HOUR(created_at) <= ?', [(int) $endHour]));
 
-        $byApp = (clone $activeQuery)
-            ->join('apps', 'apps.id', '=', 'app_installations.app_id')
-            ->select('app_installations.app_id', 'apps.name', DB::raw('count(distinct app_installations.device_id) as total'), DB::raw('max(app_installations.last_active_at) as last_active_at'))
-            ->groupBy('app_installations.app_id', 'apps.name')
+        $combinedQuery = $installEventsQuery->unionAll($activeEventsQuery);
+
+        $daily = DB::query()
+            ->fromSub($combinedQuery, 'active_logs')
+            ->selectRaw('DATE(created_at) as label, COUNT(DISTINCT device_id) as total')
+            ->groupBy('label')
+            ->orderBy('label')
+            ->get();
+
+        $byAppQuery = DB::query()
+            ->fromSub($combinedQuery, 'active_logs')
+            ->join('apps', 'apps.id', '=', 'active_logs.app_id')
+            ->select('active_logs.app_id', 'apps.name', DB::raw('COUNT(DISTINCT active_logs.device_id) as total'), DB::raw('MAX(active_logs.created_at) as last_active_at'))
+            ->groupBy('active_logs.app_id', 'apps.name')
             ->orderByDesc('total')
             ->get();
 
@@ -61,20 +78,16 @@ class AnalyticsController extends Controller
             ->when($appId, fn ($query) => $query->where('app_id', $appId))
             ->when($from, fn ($query) => $query->whereDate('created_at', '>=', $from))
             ->when($to, fn ($query) => $query->whereDate('created_at', '<=', $to))
-            ->when($startHour !== null && $startHour !== '', fn ($query) => $query->whereRaw('HOUR(created_at) >= ?', [$startHour]))
-            ->when($endHour !== null && $endHour !== '', fn ($query) => $query->whereRaw('HOUR(created_at) <= ?', [$endHour]))
+            ->when($startHour !== null && $startHour !== '', fn ($query) => $query->whereRaw('HOUR(created_at) >= ?', [(int) $startHour]))
+            ->when($endHour !== null && $endHour !== '', fn ($query) => $query->whereRaw('HOUR(created_at) <= ?', [(int) $endHour]))
             ->select('app_id', DB::raw('count(*) as total'))
             ->groupBy('app_id')
             ->pluck('total', 'app_id');
 
         return view('admin.analytics.active-users', [
             'apps' => AndroidApp::query()->orderBy('name')->get(),
-            'daily' => (clone $activeQuery)
-                ->selectRaw('date(app_installations.last_active_at) as label, count(distinct app_installations.device_id) as total')
-                ->groupBy('label')
-                ->orderBy('label')
-                ->get(),
-            'byApp' => $byApp->map(function ($row) use ($installCounts) {
+            'daily' => $daily,
+            'byApp' => $byAppQuery->map(function ($row) use ($installCounts) {
                 $row->install_count = (int) ($installCounts[$row->app_id] ?? 0);
 
                 return $row;

@@ -42,6 +42,13 @@ class AppManagementService
             'ip_address' => $ipAddress,
         ]);
 
+        AppEvent::query()->create([
+            'app_id' => $app->id,
+            'device_id' => $data['device_id'],
+            'event_name' => 'active',
+            'event_data' => ['type' => 'install'],
+        ]);
+
         return $installation;
     }
 
@@ -59,6 +66,13 @@ class AppManagementService
         $installation->update([
             'app_version' => $data['app_version'] ?? $app->current_version,
             'last_active_at' => Carbon::now(),
+        ]);
+
+        AppEvent::query()->create([
+            'app_id' => $app->id,
+            'device_id' => $data['device_id'],
+            'event_name' => 'active',
+            'event_data' => ['type' => 'heartbeat'],
         ]);
 
         return $installation;

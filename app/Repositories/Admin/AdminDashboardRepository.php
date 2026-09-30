@@ -11,6 +11,7 @@ use App\Models\PushNotification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class AdminDashboardRepository
 {
@@ -32,11 +33,16 @@ class AdminDashboardRepository
             ->when($from, fn ($query) => $query->whereDate('created_at', '>=', Carbon::parse($from)))
             ->when($to, fn ($query) => $query->whereDate('created_at', '<=', Carbon::parse($to)));
 
+        $todayActiveQuery = DB::query()
+            ->fromSub($this->activeEventsQuery($filters), 'active_logs')
+            ->whereDate('created_at', today())
+            ->count(DB::raw('DISTINCT device_id'));
+
         return [
             'total_apps' => AndroidApp::query()->count(),
             'total_installations' => $filteredInstallEvents->count(),
             'today_installations' => (clone $installEventsQuery)->whereDate('created_at', today())->count(),
-            'daily_active_users' => (clone $installationsQuery)->whereDate('last_active_at', today())->count(),
+            'daily_active_users' => $todayActiveQuery,
             'monthly_active_users' => (clone $installationsQuery)->where('last_active_at', '>=', now()->subDays(30))->count(),
             'total_notifications' => PushNotification::query()->when($appId, fn ($query) => $query->where('app_id', $appId))->count(),
             'active_advertisements' => Advertisement::query()->where('status', 'active')->when($appId, fn ($query) => $query->where('app_id', $appId))->count(),
@@ -54,19 +60,36 @@ class AdminDashboardRepository
 
     public function activityTrend(array $filters = []): Collection
     {
+        $combinedQuery = $this->activeEventsQuery($filters);
+
+        return DB::query()
+            ->fromSub($combinedQuery, 'active_logs')
+            ->selectRaw('DATE(created_at) as label, COUNT(DISTINCT device_id) as total')
+            ->groupBy('label')
+            ->orderBy('label')
+            ->get();
+    }
+
+    private function activeEventsQuery(array $filters = []): \Illuminate\Database\Query\Builder
+    {
         $appId = $filters['app_id'] ?? null;
         $from = $filters['from'] ?? null;
         $to = $filters['to'] ?? null;
 
-        return AppInstallation::query()
-            ->whereNotNull('last_active_at')
+        $installEvents = DB::table('app_install_events')
+            ->select('app_id', 'device_id', 'created_at')
             ->when($appId, fn ($query) => $query->where('app_id', $appId))
-            ->when($from, fn ($query) => $query->whereDate('last_active_at', '>=', Carbon::parse($from)))
-            ->when($to, fn ($query) => $query->whereDate('last_active_at', '<=', Carbon::parse($to)))
-            ->selectRaw('date(last_active_at) as label, count(distinct device_id) as total')
-            ->groupBy('label')
-            ->orderBy('label')
-            ->get();
+            ->when($from, fn ($query) => $query->whereDate('created_at', '>=', Carbon::parse($from)))
+            ->when($to, fn ($query) => $query->whereDate('created_at', '<=', Carbon::parse($to)));
+
+        $activeEvents = DB::table('app_events')
+            ->select('app_id', 'device_id', 'created_at')
+            ->where('event_name', 'active')
+            ->when($appId, fn ($query) => $query->where('app_id', $appId))
+            ->when($from, fn ($query) => $query->whereDate('created_at', '>=', Carbon::parse($from)))
+            ->when($to, fn ($query) => $query->whereDate('created_at', '<=', Carbon::parse($to)));
+
+        return $installEvents->unionAll($activeEvents);
     }
 
     public function recentActivities(): Collection

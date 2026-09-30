@@ -168,6 +168,8 @@
                     const yesterdayStr = getRelativeDateStr(-1);
                     const last7Str = getRelativeDateStr(-6);
                     const last30Str = getRelativeDateStr(-29);
+                    const last3MonthsStart = formatDate(new Date(today.getFullYear(), today.getMonth() - 3, today.getDate()));
+                    const last6MonthsStart = formatDate(new Date(today.getFullYear(), today.getMonth() - 6, today.getDate()));
 
                     const thisMonthStart = formatDate(new Date(today.getFullYear(), today.getMonth(), 1));
                     const lastMonthStart = formatDate(new Date(today.getFullYear(), today.getMonth() - 1, 1));
@@ -190,11 +192,18 @@
                             activeRange = 'this_month';
                         } else if (fromVal === lastMonthStart && toVal === lastMonthEnd) {
                             activeRange = 'last_month';
+                        } else if (fromVal === last3MonthsStart && toVal === todayStr) {
+                            activeRange = 'last_3_months';
+                        } else if (fromVal === last6MonthsStart && toVal === todayStr) {
+                            activeRange = 'last_6_months';
                         }
                         $displayText.text(`${formatDisplay(fromVal)} - ${formatDisplay(toVal)}`).removeClass('text-slate-500').addClass('text-slate-800 font-semibold');
                     } else {
                         $displayText.text('Select Date Range').addClass('text-slate-500').removeClass('text-slate-800 font-semibold');
                     }
+
+                    // Sync quick filter dropdowns if present on charts
+                    $('.quick-filter-select').val(activeRange !== 'custom' ? activeRange : 'last_30');
 
                     // Style the active item in the dropdown
                     $dropdown.find('.daterange-item').removeClass('bg-blue-600 text-white font-semibold').addClass('text-slate-700 hover:bg-slate-50');
@@ -232,11 +241,9 @@
                         }
                     });
 
-                    // Handle preset selection
-                    $dropdown.find('.daterange-item').on('click', function (e) {
-                        const range = $(this).data('range');
+                    // Function to apply preset range
+                    const applyPreset = function (range) {
                         if (range === 'custom') {
-                            e.stopPropagation();
                             $dropdown.addClass('hidden');
                             $trigger.removeClass('border-blue-500 ring-2 ring-blue-100').addClass('border-slate-200');
                             $trigger.find('[data-lucide="chevron-down"]').removeClass('rotate-180');
@@ -271,11 +278,33 @@
                                 from = lastMonthStart;
                                 to = lastMonthEnd;
                                 break;
+                            case 'last_3_months':
+                                from = last3MonthsStart;
+                                to = todayStr;
+                                break;
+                            case 'last_6_months':
+                                from = last6MonthsStart;
+                                to = todayStr;
+                                break;
                         }
 
                         $fromInput.val(from);
                         $toInput.val(to);
                         $container.closest('form').submit();
+                    };
+
+                    // Handle preset selection from dropdown
+                    $dropdown.find('.daterange-item').on('click', function (e) {
+                        const range = $(this).data('range');
+                        if (range === 'custom') {
+                            e.stopPropagation();
+                        }
+                        applyPreset(range);
+                    });
+
+                    // Handle quick filter select change on chart headers
+                    $(document).on('change', '.quick-filter-select', function () {
+                        applyPreset($(this).val());
                     });
 
                     // Initialize flatpickr internally on the hidden input for Custom Range selection

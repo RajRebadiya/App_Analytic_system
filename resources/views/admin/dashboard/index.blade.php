@@ -40,6 +40,8 @@
                         <button type="button" data-range="last_30" class="daterange-item block w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors font-medium">Last 30 Days</button>
                         <button type="button" data-range="this_month" class="daterange-item block w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors font-medium">This Month</button>
                         <button type="button" data-range="last_month" class="daterange-item block w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors font-medium">Last Month</button>
+                        <button type="button" data-range="last_3_months" class="daterange-item block w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors font-medium">Last 3 Months</button>
+                        <button type="button" data-range="last_6_months" class="daterange-item block w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors font-medium">Last 6 Months</button>
                         <button type="button" data-range="custom" class="daterange-item block w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors font-medium border-t border-slate-100">Custom Range</button>
                     </div>
                 </div>
@@ -90,7 +92,18 @@
     <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-bold text-slate-900">Installation Trend</h3>
-            <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full">Last 30 Days</span>
+            <div class="relative">
+                <select class="quick-filter-select text-xs font-semibold px-3 py-1.5 bg-slate-100 text-slate-700 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                    <option value="today">Today</option>
+                    <option value="yesterday">Yesterday</option>
+                    <option value="last_7">Last 7 Days</option>
+                    <option value="last_30">Last 30 Days</option>
+                    <option value="this_month">This Month</option>
+                    <option value="last_month">Last Month</option>
+                    <option value="last_3_months">Last 3 Months</option>
+                    <option value="last_6_months">Last 6 Months</option>
+                </select>
+            </div>
         </div>
         <div class="relative h-[300px]">
             <canvas id="installChart"></canvas>
@@ -103,7 +116,18 @@
     <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-bold text-slate-900">Active User Activity</h3>
-            <span class="text-xs font-semibold px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full">Real-time</span>
+            <div class="relative">
+                <select class="quick-filter-select text-xs font-semibold px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
+                    <option value="today">Today</option>
+                    <option value="yesterday">Yesterday</option>
+                    <option value="last_7">Last 7 Days</option>
+                    <option value="last_30">Last 30 Days</option>
+                    <option value="this_month">This Month</option>
+                    <option value="last_month">Last Month</option>
+                    <option value="last_3_months">Last 3 Months</option>
+                    <option value="last_6_months">Last 6 Months</option>
+                </select>
+            </div>
         </div>
         <div class="relative h-[300px]">
             <canvas id="activityChart"></canvas>

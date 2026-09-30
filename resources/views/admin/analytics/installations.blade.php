@@ -14,7 +14,18 @@
     <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-bold text-slate-900">Daily Installs</h3>
-            <span class="text-xs font-semibold px-2.5 py-1 bg-indigo-100 text-indigo-700 rounded-full">New Installs</span>
+            <div class="relative">
+                <select class="quick-filter-select text-xs font-semibold px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-xl border border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                    <option value="today">Today</option>
+                    <option value="yesterday">Yesterday</option>
+                    <option value="last_7">Last 7 Days</option>
+                    <option value="last_30">Last 30 Days</option>
+                    <option value="this_month">This Month</option>
+                    <option value="last_month">Last Month</option>
+                    <option value="last_3_months">Last 3 Months</option>
+                    <option value="last_6_months">Last 6 Months</option>
+                </select>
+            </div>
         </div>
         <div class="relative h-[300px]">
             <canvas id="dailyInstalls"></canvas>

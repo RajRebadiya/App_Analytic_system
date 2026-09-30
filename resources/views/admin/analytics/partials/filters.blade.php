@@ -50,6 +50,8 @@
                         <button type="button" data-range="last_30" class="daterange-item block w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors font-medium">Last 30 Days</button>
                         <button type="button" data-range="this_month" class="daterange-item block w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors font-medium">This Month</button>
                         <button type="button" data-range="last_month" class="daterange-item block w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors font-medium">Last Month</button>
+                        <button type="button" data-range="last_3_months" class="daterange-item block w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors font-medium">Last 3 Months</button>
+                        <button type="button" data-range="last_6_months" class="daterange-item block w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors font-medium">Last 6 Months</button>
                         <button type="button" data-range="custom" class="daterange-item block w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors font-medium border-t border-slate-100">Custom Range</button>
                     </div>
                 </div>
